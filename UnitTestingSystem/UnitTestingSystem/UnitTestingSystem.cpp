@@ -129,7 +129,7 @@ uts::UTSTreeConstructor::~UTSTreeConstructor()
 
 void uts::UTSTreeConstructor::PushDomain(std::string holder)
 {
-	int newDomainIndex = m_allDomains.size();
+	int newDomainIndex = (int)m_allDomains.size();
 
 	UTSNode newDomain = UTSNode();
 	newDomain.m_holder = holder;
@@ -154,7 +154,7 @@ void uts::UTSTreeConstructor::PopDomain()
 
 void uts::UTSTreeConstructor::PushTest(std::string holder, UnitTest test)
 {
-	int newDomainIndex = m_allDomains.size();
+	int newDomainIndex = (int)m_allDomains.size();
 
 	UTSNode newDomain = UTSNode();
 	newDomain.m_holder = "test: " + holder;
