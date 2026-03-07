@@ -6,7 +6,7 @@
 
 bool ExampleTest()
 {
-	return true;
+	return false;
 }
 
 bool ExampleTestB()
