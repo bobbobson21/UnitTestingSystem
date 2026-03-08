@@ -4,19 +4,24 @@
 #include <iostream>
 #include "lib/UnitTestingSystem.h"
 
-bool ExampleTest()
+uts::UTSTestSeverityCode ExampleTest()
 {
-	return false;
+	return uts::UTSTestSeverityCode::TSCFail;
 }
 
-bool ExampleTestB()
+uts::UTSTestSeverityCode ExampleTestB()
 {
-	return true;
+	return uts::UTSTestSeverityCode::TSCPass;
 }
 
-bool ExampleTestC()
+uts::UTSTestSeverityCode ExampleTestC()
 {
-	return true;
+	return uts::UTSTestSeverityCode::TSCPass;
+}
+
+uts::UTSTestSeverityCode ExampleTestD()
+{
+	return uts::UTSTestSeverityCode::TSCPass;
 }
 
 int main()
@@ -27,19 +32,21 @@ int main()
 	mainTestTree.PushDomain("class", "tester");
 
 	mainTestTree.PushDomain("static");
-	mainTestTree.PushTest("ExampleTest", ExampleTest);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTest", ExampleTest);
+	mainTestTree.PushPopNotice("running C block");
+	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
 	mainTestTree.PopDomain();
 
 	mainTestTree.PushDomain("instance");
-	mainTestTree.PushTest("ExampleTestB", ExampleTestB);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushTest("ExampleTestC", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestB", ExampleTestB);
+	mainTestTree.PushPopNotice("running D block");
+	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
 	mainTestTree.PopDomain();
 
 	mainTestTree.PopDomain();
