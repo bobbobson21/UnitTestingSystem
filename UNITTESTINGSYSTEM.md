@@ -1,5 +1,5 @@
 ﻿
-# namespace: uts; UTSNode; class: UTSTreeConstructor<br>
+# namespace: uts; struct: UTSNode; class: UTSTreeConstructor<br>
 
 | library | system | testing | copyable | instantiate |
 |---------|--------|---------|----------|-------------|
@@ -52,9 +52,9 @@
 ## How it works overview<br>
 This system uses a lot of custom made logic in order work. However the domains work due to a stack buff and every time a domain is added a new index is added to the buff and this index also relates to a index in the UTSTree. the node at whos related index as previouselly at the top of the tree gets a child link index added to it and the new node also gets it parent index set to that of the last node index at the top of the stack
 
-Tests dont effect the stack as they can not have childrent but they do still link to there parent node whos index will be at the top of the stack. Test fuctions also require no pramaters and a boolean retun thare are no restrictions as to what can go in a test function beyond that.
+Tests don't effect the stack as they can not have children but they do still link to there parent node who index will be at the top of the stack. Test functions also require no parameters and a boolean return there are no restrictions as to what can go in a test function beyond that.
 
-ConOutputTestResults renderes the results and it should wokr on all platforms apart from playstation and UTSTreeConstructor is how you actually put togeter the test structuer.
+ConOutputTestResults renderers/outputs the results and it should work on all platforms apart from play station and UTSTreeConstructor is how you actually put together the test structure.
 
 <br>
 
@@ -155,7 +155,7 @@ Unit Testing System Output
 ### An example of how to use domains<br>
 Domains are like your unity game objects they can store components/test and they can store other gameobjects/domains but they dont do anything else beyond that and they do not run tests.
 
-Insted tests can be put inside of them and if a tast fails it gose red and the domain will go red and so will every other parent domain to the roo making it very easy to find out if someting whent wrong by going to the top of the test output and from there you can scroll down to you find the class and then the sub section and then the test.
+Instead tests can be put inside of them and if a test fails it goes red and the domain will go red and so will every other parent domain to the root making it very easy to find out if something went wrong by going to the top of the test output and from there you can scroll down to you find the class and then the sub section and then the test.
 
 Domains can be added with names and they dont need anything else but it is also woth noting for every push domain there MUST be a pop domain and vice versa.
 
@@ -184,9 +184,9 @@ Domains can be added with names and they dont need anything else but it is also 
 ```
 
 ### An example of how to use tests<br>
-Tests are best of always being in a domain and idearly there should be one for the file,class,static menbers,non static members, and inherited and public if there is a parent class.
+Tests are best of always being in a domain and ideally there should be one for the file,class,static members,non static members, and inherited and public if there is a parent class.
 
-To make a test you must fist make a function with no inputs and a bool output and if that function retuns false the test fails and the function will be exacuted when RunTests is exacuted.
+To make a test you must fist make a function with no inputs and a bool output and if that function returns false the test fails and the function will be executed when RunTests is executed.
 
 ```
 bool ExampleTest()
@@ -226,34 +226,43 @@ bool ExampleTest() //creating tests
 <br>
 
 ## Importance<br>
-Althougth this is not actually needed for the final version of the engie its important because it helps ensure better code quality and it also provides proof that the code is being mantained to a high degree.
+Although this is not actually needed for the final version of the engine its important because it helps ensure better code quality and it also provides proof that the code is being maintained to a high degree.
 
 <br>
 
 
 ## Reflection 1.0.0<br>
-### What was developed<br>
 
+### What was developed<br>
+The unit test system static library was in whole what was developed this library contains the UTSTreeConstructor which allows you to assemble tests and domains in a way that allows you to easily spot where the failures are in the output. The library also contains some helper classes such as UTSTree and UTSNode which acts a tree elments also aiding in this simple to understand view.
+
+Tests can be added though the UTSTree constructor and right now they are only a bool based system with false meaning that a rest failed.
 
 <br>
 
 ### How I feel about this<br>
-
+I really like how this library came together and how well it functions at primary task and I really like how well the UTSTreeConstructor I am not much of a bing fan to the file layout its self as it is a bit different from what I am used to given its a library and all but it is something I can cope with.
 
 <br>
 
-### Evaluration of work<br>
+### Evaluation of work<br>
+This library is effective at providing an understandable and readable layout when print the tests and results to console allowing for easy in tracking down issues. It is also effective at running the tests with the time complexity being o(n) as long as the individual tests them self are not factored in to the time complexity.
 
+The library is a static one making it a bit harder to work with and it also means it is still a factor for compile time a non static version can be made but it will require all strings and vectors to be replaced with non likenesses. Likewise there also isn't much detail into the type of error (such as if its a try catch or an error code) and there also isn't information on what tasks its currently processing which is bad because timer related tasks may take a while which will stall execution till there done.
+
+In conclusion the work done so far is sufficient at handling the errors them self's but it lacks the ability to provide a level of comprehensive insight into how exactly a test failed oh what tests are currently being processed.
 
 <br>
 
 ### Conclusion<br>
+A lot was learned from this experience prearticular with the std::stacks as well as with asni color code. A lot was also gained from the experience of developing this system but in prearticular the main takeaway is the knowledge I developed in creating my own custom library.
 
+I could of made it so that test functions don't return a simple bool from the start and that would of lead to a better testing and handling of edge cases and I could of made some sort of testing disclaimer for the test that will take a while. but the library as a whole dose function remarkable well without failure or crashing.
 
 <br>
 
 ### Next steps<br>
-
+Next I want to disclaimer support so that tests which can freeze up the program can inform you about it before hand and want to add more error types and maybe turn it into a dll.
 
 <br>
 
@@ -267,4 +276,4 @@ Althougth this is not actually needed for the final version of the engie its imp
 <br>
 
 
->Class and document done by: Kyle Edwards, e017770n@student.staffs.ac.uk&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;First created: 07/3/2026&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;Last updated: 07/0302026
+>library and document done by: Kyle Edwards, e017770n@student.staffs.ac.uk&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;First created: 06/3/2026&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;Last updated: 08/03/2026
