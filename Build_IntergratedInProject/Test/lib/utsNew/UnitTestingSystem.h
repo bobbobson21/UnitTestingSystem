@@ -2,7 +2,12 @@
 #include <iostream>
 
 #define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
-#define UTSNEW_API
+
+#ifdef UTSNEW_EXPORTS
+#define UTSNEW_API __declspec(dllexport)
+#else
+#define UTSNEW_API __declspec(dllimport)
+#endif
 
 namespace uts
 {
@@ -31,7 +36,7 @@ namespace uts
 	public:
 		char* m_identifyer = nullptr;
 		char* m_runNotice = nullptr; ///if set this will output text when its coaspoing test runs and it can also be rendered in the test tree output m_identifyer or test result will not be rendered
-		
+
 		unsigned int* m_children = nullptr;
 		unsigned int m_childrenLength = 0;
 

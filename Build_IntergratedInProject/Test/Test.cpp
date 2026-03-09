@@ -2,8 +2,8 @@
 //
 
 #include <iostream>
-//#include "lib/UnitTestingSystem.h"
-#include "UnitTestingSystem.h"
+
+#include "utsNew/UnitTestingSystem.h"
 
 uts::UTSTestSeverityCode ExampleTest()
 {
