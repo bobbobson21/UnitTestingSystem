@@ -31,7 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\utsNew.lib" />
-    <Library Include="lib\utsNew.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\utsNew\UnitTestingSystem.h">

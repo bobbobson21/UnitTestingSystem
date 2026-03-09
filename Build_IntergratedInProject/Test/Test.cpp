@@ -55,7 +55,7 @@ int main()
 
 	mainTestTree.RunTests();
 
-	uts::ConOutputTestResults(mainTestTree.GetContainer());
+	uts::ConOutputTestResults(mainTestTree.GetContainer(), true);
 
     std::cout << "Hello World!\n";
 }
