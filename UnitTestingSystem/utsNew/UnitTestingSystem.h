@@ -1,6 +1,8 @@
 
 #include <iostream>
 
+#define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
+
 #ifdef UTSNEW_EXPORTS
 #define UTSNEW_API __declspec(dllexport)
 #else
@@ -34,7 +36,7 @@ namespace uts
 	public:
 		char* m_identifyer = nullptr;
 		char* m_runNotice = nullptr; ///if set this will output text when its coaspoing test runs and it can also be rendered in the test tree output m_identifyer or test result will not be rendered
-		
+
 		unsigned int* m_children = nullptr;
 		unsigned int m_childrenLength = 0;
 
@@ -110,13 +112,13 @@ namespace uts
 		/// Get the tree.
 		/// </summary>
 		/// <returns>The tree.</returns>
-		UTSDataContainer* GetTree(void);
+		UTSDataContainer* GetContainer(void);
 
 	private:
-		void PushToStack(unsigned int item);
-		void PopFromStack();
-		void freeStack();
-		unsigned int ReadStack();
+		void DomainIdStackPush(unsigned int item);
+		void DomainIdStackPop();
+		void DomainIdStackFree();
+		unsigned int DomainIdStackRead();
 
 
 		unsigned int* m_activeDomainStackPointer = nullptr;

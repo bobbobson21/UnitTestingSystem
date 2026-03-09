@@ -1,8 +1,3 @@
-// utsNew.cpp : Defines the exported functions for the DLL.
-//
-
-#include "pch.h"
-#include "framework.h"
 
 #include "UnitTestingSystem.h"
 
@@ -46,7 +41,7 @@ void uts::UTSDataContainer::AddNode(UTSNode node, unsigned int parentIndex)
 
 	//adds child to parent
 
-	if (m_nodesLength - 1 != parentIndex)
+	if (m_nodesLength -1 != parentIndex)
 	{
 		unsigned int* parentChildrenBuffer = new unsigned int[m_nodes[parentIndex].m_childrenLength + 1];
 
@@ -95,10 +90,10 @@ void uts::UTSTreeConstructor::PushDomain(const char* identifyer)
 void uts::UTSTreeConstructor::PushDomain(const char* type, const char* identifyer)
 {
 	char* idBuffer = new char[(strlen(type) + strlen(identifyer)) + 3];
-
+	
 	memcpy(idBuffer, type, strlen(type));
-	idBuffer[strlen(type) + 0] = ':';
-	idBuffer[strlen(type) + 1] = ' ';
+	idBuffer[strlen(type) +0] = ':';
+	idBuffer[strlen(type) +1] = ' ';
 	memcpy(idBuffer + (strlen(type) + 2), identifyer, strlen(identifyer));
 	idBuffer[strlen(type) + strlen(identifyer) + 2] = '\0';
 
@@ -149,8 +144,8 @@ void uts::UTSTreeConstructor::Replant(const char* identifyer)
 
 	UTSNode root = UTSNode();
 
-	root.m_identifyer = new char[strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(root.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	root.m_identifyer = new char[strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) +1];
+	memcpy(root.m_identifyer, identifyer, sizeof(char) *(strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) +1));
 
 	//adds node to tree
 	m_treeMain->AddNode(root, rootIndex);
@@ -203,7 +198,7 @@ void uts::UTSTreeConstructor::DomainIdStackPush(unsigned int item)
 	if (m_activeDomainStackIndex >= m_activeDomainStackLength)
 	{
 		m_activeDomainStackLength = m_activeDomainStackLength + 1;
-		unsigned int* stackBuffer = new unsigned int[m_activeDomainStackLength];
+ 		unsigned int* stackBuffer = new unsigned int[m_activeDomainStackLength];
 
 		if (m_activeDomainStackPointer != nullptr)
 		{
@@ -220,7 +215,7 @@ void uts::UTSTreeConstructor::DomainIdStackPush(unsigned int item)
 
 void uts::UTSTreeConstructor::DomainIdStackPop()
 {
-	m_activeDomainStackIndex = m_activeDomainStackIndex - 1;
+	m_activeDomainStackIndex = m_activeDomainStackIndex -1;
 }
 
 void uts::UTSTreeConstructor::DomainIdStackFree()
@@ -232,7 +227,7 @@ void uts::UTSTreeConstructor::DomainIdStackFree()
 
 unsigned int uts::UTSTreeConstructor::DomainIdStackRead()
 {
-	return m_activeDomainStackPointer[m_activeDomainStackIndex - 1];
+	return m_activeDomainStackPointer[m_activeDomainStackIndex -1];
 }
 
 
@@ -319,7 +314,7 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 
 		if (results->m_nodes[results->m_nodes[domainIndex].m_children[i]].m_childrenLength > 0 && i != results->m_nodes[domainIndex].m_childrenLength - 1) //spaces out sections in same group
 		{
-			for (unsigned int i = 0; i < +depth; i++) { std::cout << indentationSpaceSingle; }
+			for (unsigned int i = 0; i <+ depth; i++) { std::cout << indentationSpaceSingle; }
 			std::cout << indentationSpaceSingle << "\n";
 		}
 	}

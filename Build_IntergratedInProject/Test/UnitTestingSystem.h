@@ -1,15 +1,15 @@
-#include <stack>
-#include <string>
-#include <vector>
+
 #include <iostream>
 
-//unit testing system 
+#define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
+#define UTSNEW_API
+
 namespace uts
 {
 	/// <summary>
 	/// the lower down on the list it is the more important it is
 	/// </summary>
-	enum UTSTestSeverityCode : char
+	enum UTSNEW_API UTSTestSeverityCode : char
 	{
 		TSCPass,
 		TSCWarning,
@@ -24,50 +24,54 @@ namespace uts
 	/// <summary>
 	/// A function that returns a severity code TSCPass for good anything else for bad.
 	/// </summary>
-	typedef UTSTestSeverityCode(*UTSUnitTest)();
+	typedef UTSNEW_API UTSTestSeverityCode(*UTSUnitTest)();
 
-	/// <summary>
-	/// the nodes of the tree
-	/// </summary>
-	struct UTSNode
+	class UTSNEW_API UTSNode
 	{
-		std::string m_identifyer = "";
-		std::string m_runNotice = ""; ///if set this will output text when its coaspoing test runs and it can also be rendered in the test tree output m_identifyer or test result will not be rendered
-		std::vector<unsigned int> m_children = std::vector<unsigned int>();
+	public:
+		char* m_identifyer = nullptr;
+		char* m_runNotice = nullptr; ///if set this will output text when its coaspoing test runs and it can also be rendered in the test tree output m_identifyer or test result will not be rendered
+		
+		unsigned int* m_children = nullptr;
+		unsigned int m_childrenLength = 0;
+
 		unsigned int m_parent = 0;
 
 		UTSUnitTest m_test = nullptr;
 		UTSTestSeverityCode m_severityCodeOfTest = UTSTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
+
+		void free(void);
 	};
 
-	/// <summary>
-	/// The uts tree object which can be acess as both a vector and a tree.
-	/// </summary>
-	typedef std::vector<UTSNode> UTSTree;
-
-	/// <summary>
-	/// A wapper for UTSTree that allows you to build the unit test tree a lot easier and also test it.
-	/// </summary>
-	class UTSTreeConstructor
+	class UTSNEW_API UTSDataContainer
 	{
 	public:
-		UTSTreeConstructor();
-		UTSTreeConstructor(std::string rootName);
-		~UTSTreeConstructor();
+		UTSNode* m_nodes = nullptr;
+		unsigned int m_nodesLength = 0;
 
+		void free(void); ///use this when you are done with the tree
+		void AddNode(UTSNode node, unsigned int parentIndex);
+	};
+
+	// This class is exported from the dll
+	class UTSNEW_API UTSTreeConstructor {
+	public:
+		UTSTreeConstructor(void);
+		UTSTreeConstructor(const char* rootName);
+		~UTSTreeConstructor(void);
 
 		/// <summary>
 		/// Adds a new child cabable node/identifyer to the last identifyer created.
 		/// </summary>
 		/// <param name="identifyer">Node name.</param>
-		void PushDomain(std::string identifyer);
+		void PushDomain(const char* identifyer);
 
 		/// <summary>
 		/// Adds a new child cabable node/identifyer to the last identifyer created.
 		/// </summary>
 		/// <param name="type">Object type for example: class, namespace ect.</param>
 		/// <param name="identifyer">Node name.</param>
-		void PushDomain(std::string type, std::string identifyer);
+		void PushDomain(const char* type, const char* identifyer);
 
 		/// <summary>
 		/// Replace the last identifyer crated with the one created before it and in doing so all new pushed domains will be added to that insted.
@@ -80,48 +84,58 @@ namespace uts
 		/// </summary>
 		/// <param name="identifyer">Node name.</param>
 		/// <param name="test">The unit test function.</param>
-		void PushPopTest(std::string identifyer, UTSUnitTest test);
+		void PushPopTest(const char* identifyer, UTSUnitTest test);
 
 		/// <summary>
 		/// Adds a unit test to the last hoder created. Tests can not have children.
 		/// </summary>
-		void PushPopNotice(std::string notice);
+		void PushPopNotice(const char* notice);
 
 
 		/// <summary>
 		/// Kills the tree and everything in it and then creates a new tree with a root identifyer.
 		/// </summary>
-		void Replant(std::string identifyer = "root");
+		void Replant(const char* identifyer = "root");
 
 
 		/// <summary>
-		/// Runs thougth the tree exacuting every test it finds on the way.
+		/// Runs thougth the tree exacuting every test it finds on the way and storing the result.
 		/// </summary>
-		/// <returns>The tree object with the results on what tests succeded and what didnt.</returns>
-		UTSTree RunTests();
+		void RunTests(void);
 
 		/// <summary>
-		/// Get the tree but without any tests being runned.
+		/// Get the tree.
 		/// </summary>
 		/// <returns>The tree.</returns>
-		UTSTree GetTree();
+		UTSDataContainer* GetContainer(void);
 
 	private:
-		std::stack<unsigned int> m_currentActiveDomain = std::stack<unsigned int>();
-		UTSTree m_allDomains = UTSTree();
+		void DomainIdStackPush(unsigned int item);
+		void DomainIdStackPop();
+		void DomainIdStackFree();
+		unsigned int DomainIdStackRead();
+
+
+		unsigned int* m_activeDomainStackPointer = nullptr;
+		unsigned int m_activeDomainStackLength = 0; //how big the stack is in genral including poped elements
+		unsigned int m_activeDomainStackIndex = 0; //the top of the stack
+
+		UTSDataContainer* m_treeMain = nullptr;
 	};
+
+
 
 	/// <summary>
 	/// Outputs the results to the console.
 	/// </summary>
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
-	void ConOutputTestResults(const UTSTree* results, bool outputRunNotices = false);
+	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false);
 
 	/// <summary>
 	/// outputs the charater and color related to a test code into the console
 	/// </summary>
 	/// <param name="testCode">the test code</param>
-	void ConOutputTestSeverityCode(UTSTestSeverityCode testCode);
+	UTSNEW_API void ConOutputTestSeverityCode(UTSTestSeverityCode testCode);
 
 	/// <summary>
 	/// you shouldnt use this it is ment to be used by ConOutputTestResults only.
@@ -129,5 +143,6 @@ namespace uts
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
 	/// <param name="domainIndex">The node we are starting from.</param>
 	/// <param name="depth">Our depth so far.</param>
-	void ConOutputDomainsAndSubDomains(const UTSTree* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false);
+	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false);
+
 }

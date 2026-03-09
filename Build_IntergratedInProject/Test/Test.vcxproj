@@ -127,16 +127,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="UnitTestingSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\UnitTestingSystem.idb" />
     <None Include="lib\UnitTestingSystem.pdb" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib\UnitTestingSystem.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\UnitTestingSystem.lib" />
+    <ClInclude Include="UnitTestingSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

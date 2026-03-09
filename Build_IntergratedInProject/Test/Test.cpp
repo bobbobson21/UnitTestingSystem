@@ -2,7 +2,8 @@
 //
 
 #include <iostream>
-#include "lib/UnitTestingSystem.h"
+//#include "lib/UnitTestingSystem.h"
+#include "UnitTestingSystem.h"
 
 uts::UTSTestSeverityCode ExampleTest()
 {
@@ -52,9 +53,9 @@ int main()
 	mainTestTree.PopDomain();
 	mainTestTree.PopDomain();
 
-	uts::UTSTree results = mainTestTree.RunTests();
+	mainTestTree.RunTests();
 
-	uts::ConOutputTestResults(&results);
+	uts::ConOutputTestResults(mainTestTree.GetContainer());
 
     std::cout << "Hello World!\n";
 }

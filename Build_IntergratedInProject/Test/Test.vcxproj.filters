@@ -18,17 +18,17 @@
     <ClCompile Include="Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTestingSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\UnitTestingSystem.idb" />
     <None Include="lib\UnitTestingSystem.pdb" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib\UnitTestingSystem.h">
+    <ClInclude Include="UnitTestingSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\UnitTestingSystem.lib" />
   </ItemGroup>
 </Project>
