@@ -22,40 +22,61 @@
 
 ## Types<br>
 
-| types                                   | meaning                                                                                                      |
-|-----------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| typedef bool(*UnitTest)()               | A format for storing the pointer to unit test functions.                                                     |
-| clsss UTSNode; | A format for stoing a collection of UTSNode that can be access as both a vector and a tree.                  |
-| class UTSDataContainer                          | Contains infomation on test child nodes and parent nodes                                                     |
-| class UTSTreeConstructor                | Allows you to build and run you unit test and acts a sort of middle man between you and the raw UTSTree.     |
+| types                                          | meaning                                                                                                         |
+|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| enum UTSTestSeverityCode : char                | stores the diffrent types of SeverityCodes with TSCPass being the primary code.                                 |
+| typedef UTSTestSeverityCode(*UnitTest)()       | A format for storing the pointer to unit test functions.                                                        |
+| clsss UTSNode;                                 | Contains infomation on tests, child nodes, and parent nodes.                                                    |
+| class UTSDataContainer                         | A format for stoing a collection of UTSNode that can be access as both a vector and a tree.                     |
+| class UTSTreeConstructor                       | Allows you to build and run you unit test and acts a sort of middle man between you and the raw UTSTree.        |
 
 
 ## Functions<br>
 
-| public UTSTreeConstructor class definitions   | what it dose                                
-|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| void PushDomain(std::string holder)                   | Pushs a new domain/child barering node to the tree and then sets it as the active node which all other domain and test pushes will be put under. |
-| void PushDomain(std::string type, std::string holder) | Pushs a new domain/child barering node to the tree but with a type and a name/holder.                                                            |
-| void PopDomain()                                      | Pops the last domain from the setting the pervious active node to the active node once more.                                                     |
-| void PushTest(std::string holder, UnitTest test)      | Pushes a test to a tree and pops it as well because tests cant have children                                                                     |
-| void Replant(std::string holder = "root")             | Kills the tree and creates another one with a new root which can be given a name.                                                                |
-| UTSTree RunTests()                                    | Runs all the unit test with o(n) time thanks to how UTSTree works. Then it outputs a copy of the currently constuced tree with the test data.    |
-| UTSTree GetTree()                                     | Gets a copy of the currently constructed tree.                                                                                                   |
+| public UTSTreeConstructor class definitions               | what it dose                                                                                                                                     |
+|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| void PushDomain(const char* identifyer)                   | Pushs a new domain/child barering node to the tree and then sets it as the active node which all other domain and test pushes will be put under. |
+| void PushDomain(std::string type, const char* identifyer) | Pushs a new domain/child barering node to the tree but with a type and a name/holder.                                                            |
+| void PopDomain()                                          | Pops the last domain from the setting the pervious active node to the active node once more.                                                     |
+| void PushPopTest(const char* identifyer, UnitTest test)   | Pushes a test to a tree and pops it as well because tests cant have children.                                                                    |
+| void PushPopNotice(const char* notice)                    | Sends a notices to the console about the nexts test being exacuted bellow.                                                                       |
+| void Replant(const char* identifyer = "root")             | Kills the tree and creates another one with a new root which can be given a name.                                                                |
+| UTSTree RunTests()                                        | Runs all the unit test with o(n) time thanks to how UTSDataContainer works. Then it stores the results in the nodes of the tree.                 |
+| UTSTree GetContainer()                                    | Gets a copy of the currently constructed tree.                                                                                                   |
 
+| public UTSDataContainer class definitions            | what it dose                                                                                                                                     |
+|------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| void free()                                          | Frees the nodes from the container dose not free the container that shold be dme manually using detete.                                          |
+| void AddNode(UTSNode node, unsigned int parentIndex) | Adds a node to the container/tree.                                                                                                               |
 
-| uts namespace definitions                                                               | what it dose                                                                                               |  
-|-----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| void ConOutputTestResults(const UTSTree* results)                                       | Outputs a UTS tree to console with infomation on what errors occore as long as the tests have been runned. |
-| void ConOutputDomainsAndSubDomains(const UTSTree* results, int domainIndex, int depth); | Not really ment to be used but it outputs a small section of the tree to the console.                      |
+| public UTSDataContainer class definitions            | what it dose                                                                                                                                     |
+|------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| void free()                                          | Frees the node and it should not be called if its in a container                                                                                 |
+
+| uts namespace definitions                                                                        | what it dose                                                                                               |  
+|--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| void ConOutputTestResults(const UTSDataContainer* results)                                       | Outputs a UTS tree to console with infomation on what errors occore as long as the tests have been runned. |
+| void ConOutputTestSeverityCode(UTSTestSeverityCode testCode);                                    | Not really ment to be used but it outputs .                                                                |
+| void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, int domainIndex, int depth); | Not really ment to be used but it outputs a small section of the tree to the console.                      |
 
 <br>
 
 ## How it works overview<br>
 This system uses a lot of custom made logic in order work. However the domains work due to a stack buff and every time a domain is added a new index is added to the buff and this index also relates to a index in the UTSTree. the node at whos related index as previouselly at the top of the tree gets a child link index added to it and the new node also gets it parent index set to that of the last node index at the top of the stack
 
-Tests don't effect the stack as they can not have children but they do still link to there parent node who index will be at the top of the stack. Test functions also require no parameters and a boolean return there are no restrictions as to what can go in a test function beyond that.
-
 ConOutputTestResults renderers/outputs the results and it should work on all platforms apart from play station and UTSTreeConstructor is how you actually put together the test structure.
+
+Tests don't effect the stack as they can not have children but they do still link to there parent node who index will be at the top of the stack. Test functions also require no parameters and a UTSTestSeverityCode return there are no restrictions as to what can go in a test function beyond that. UTSTestSeverityCodes will override lower codeds in parent propagation if they have a higher value.
+
+|enum UTSTestSeverityCode codes | description                                                                              | value |
+|-------------------------------|------------------------------------------------------------------------------------------|-------|
+|TSCPass                        | The test passed and the will be overrided by eveything.                                  | 0     |
+|TSCWarning                     | A warning happend but nothing really bad occored.                                        | 1     |
+|TSCDetectionFailed             | Was unable to detect if the test worked or failed.                                       | 2     |
+|TSCTryCatchFail                | A global try catch around the test failed.                                               | 3     |
+|TSCFail                        | The test failed.                                                                         | 4     |
+|TSCCrashFail                   | The test would of caused a crash.                                                        | 5     |
+|TSCMaxNull                     | An equivalance to TSCDetectionFailed but in can be used as the tob bounds as a for loop. | 6     |
 
 <br>
 
@@ -108,9 +129,9 @@ int main()
 	mainTestTree.PopDomain();
 	mainTestTree.PopDomain();
 
-	uts::UTSTree results = mainTestTree.RunTests();
+	mainTestTree.RunTests();
 
-	uts::ConOutputTestResults(&results);
+	uts::ConOutputTestResults(mainTestTree.GetContainer());
 
     std::cout << "Hello World!\n";
 }
@@ -132,19 +153,19 @@ Unit Testing System Output
          [!] static
          {
             [!] test: ExampleTest
-            [.] test: ExampleTestC
-            [.] test: ExampleTestC
-            [.] test: ExampleTestC
-            [.] test: ExampleTestC
+            [+] test: ExampleTestC
+            [+] test: ExampleTestC
+            [+] test: ExampleTestC
+            [+] test: ExampleTestC
          }
 
-         [.] instance
+         [+] instance
          {
-            [.] test: ExampleTestB
-            [.] test: ExampleTestC
-            [.] test: ExampleTestC
-            [.] test: ExampleTestC
-            [.] test: ExampleTestC
+            [+] test: ExampleTestB
+            [+] test: ExampleTestD
+            [+] test: ExampleTestD
+            [+] test: ExampleTestD
+            [+] test: ExampleTestD
          }
       }
    }
@@ -180,7 +201,6 @@ Domains can be added with names and they dont need anything else but it is also 
 	mainTestTree.PushDomain("class", "graphicsD");
 
 	mainTestTree.PopDomain();
-
 	mainTestTree.PopDomain();
 ```
 
@@ -219,8 +239,8 @@ bool ExampleTest() //creating tests
 	mainTestTree.PushTest("ExampleTest", ExampleTest);
 	mainTestTree.PopDomain();
 
-	uts::UTSTree results = mainTestTree.RunTests(); //outputing results
-	uts::ConOutputTestResults(&results);
+	mainTestTree.RunTests(); //outputing results
+	uts::ConOutputTestResults(mainTestTree.GetContainer());
 
 ```
 
@@ -271,27 +291,28 @@ Next I want to disclaimer support so that tests which can freeze up the program 
 ## Reflection 2.0.0<br>
 
 ### What was developed<br>
-
+The library was refactored into a dll which makes it much more portable and modular and there are now more than two types of issue states as well as notices which can be used to tell you when a test is running that well take a long time. 
 
 <br>
 
 ### How I feel about this<br>
-
+I really like these improvments and how much clarity they give to the user I dont really like how all the string now have to be const char* strings but there isnt much I can dow about that.
 
 <br>
 
 ### Evaluation of work<br>
+These improvments make the library much more user freindly and provides context to stalls in the testing should they occour but it can be more difficult to use as the strings are now char strings this can however be mitagates with C_str() should it need to be but there is however a maximum length to the string now as well of 1024 so nothing entered into any of the functions can excceced that.
 
 
 <br>
 
 ### Conclusion<br>
-
+Nothing can be done about the sting issue unfounetlly so apart from testing everything, because it all works with pointers, I do not think there is much else to do with this.
 
 <br>
 
 ### Next steps<br>
-
+Test everything and ask for more work.
 
 <br>
 
