@@ -106,6 +106,7 @@ void uts::UTSTreeConstructor::PushDomain(const char* type, const char* identifye
 	delete[] idBuffer;
 }
 
+
 void uts::UTSTreeConstructor::PopDomain()
 {
 	DomainIdStackPop();
@@ -114,21 +115,24 @@ void uts::UTSTreeConstructor::PopDomain()
 
 void uts::UTSTreeConstructor::PushPopTest(const char* identifyer, UTSUnitTest test)
 {
-	int newDomainIndex = (int)m_treeMain->m_nodesLength;
-
 	UTSNode newDomain = UTSNode();
 	newDomain.m_test = test;
 
-	newDomain.m_identifyer = new char[strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	char type[] = "test";
+	char* idBuffer = new char[(strlen(type) + strlen(identifyer)) + 3];
 
+	memcpy(idBuffer, type, strlen(type));
+	idBuffer[strlen(type) + 0] = ':';
+	idBuffer[strlen(type) + 1] = ' ';
+	memcpy(idBuffer + (strlen(type) + 2), identifyer, strlen(identifyer));
+	idBuffer[strlen(type) + strlen(identifyer) + 2] = '\0';
+
+	newDomain.m_identifyer = idBuffer;
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
 }
 
 void uts::UTSTreeConstructor::PushPopNotice(const char* notice)
 {
-	int newDomainIndex = (int)m_treeMain->m_nodesLength;
-
 	UTSNode newDomain = UTSNode();
 
 	newDomain.m_runNotice = new char[strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
@@ -236,6 +240,68 @@ unsigned int uts::UTSTreeConstructor::DomainIdStackRead()
 }
 
 
+void uts::UTSListConstructor::AddTest(const char* identifyer, UTSUnitTest test)
+{
+	unsigned int newDomainIndex = m_listMain->m_nodesLength;
+
+	UTSNode newDomain = UTSNode();
+	newDomain.m_test = test;
+
+	char type[] = "test";
+	char* idBuffer = new char[(strlen(type) + strlen(identifyer)) + 3];
+
+	memcpy(idBuffer, type, strlen(type));
+	idBuffer[strlen(type) + 0] = ':';
+	idBuffer[strlen(type) + 1] = ' ';
+	memcpy(idBuffer + (strlen(type) + 2), identifyer, strlen(identifyer));
+	idBuffer[strlen(type) + strlen(identifyer) + 2] = '\0';
+
+	newDomain.m_identifyer = idBuffer;
+	m_listMain->AddNode(newDomain, newDomainIndex);
+}
+
+void uts::UTSListConstructor::AddNotice(const char* notice)
+{
+	unsigned int newDomainIndex = m_listMain->m_nodesLength;
+	UTSNode newDomain = UTSNode();
+
+	newDomain.m_runNotice = new char[strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runNotice, notice, sizeof(char) * (strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+
+	m_listMain->AddNode(newDomain, newDomainIndex);
+}
+
+
+void uts::UTSListConstructor::ClearList(void)
+{
+	m_listMain->free();
+}
+
+
+void uts::UTSListConstructor::RunTests(void)
+{
+	for (unsigned int i = 0; i < m_listMain->m_nodesLength; i++)
+	{
+		if (m_listMain->m_nodes[i].m_runNotice != nullptr)
+		{
+			std::cout << "\033[0;96;49m" << "Unit Test System is running: " << "\033[0m" << m_listMain->m_nodes[i].m_runNotice << "\n";
+		}
+
+		if (m_listMain->m_nodes[i].m_test != nullptr)
+		{
+			UTSTestSeverityCode resultCode = m_listMain->m_nodes[i].m_test();
+			m_listMain->m_nodes[i].m_severityCodeOfTest = resultCode;
+
+		}
+	}
+}
+
+uts::UTSDataContainer* uts::UTSListConstructor::GetContainer()
+{
+	return m_listMain;
+}
+
+
 void uts::ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices)
 {
 	std::cout << "\033[0;96;49m" << "\n";
@@ -307,7 +373,7 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 	std::cout << results->m_nodes[domainIndex].m_identifyer << "\n";
 
 
-	if (results->m_nodes[domainIndex].m_childrenLength > 0) //tests cant have chaildren so we shouldnt do this
+	if (results->m_nodes[domainIndex].m_childrenLength > 0) //group stat for domains
 	{
 		for (unsigned int i = 0; i < depth; i++) { std::cout << indentationSpaceSingle; }
 		std::cout << "{" << "\n";
@@ -324,9 +390,9 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 		}
 	}
 
-	if (results->m_nodes[domainIndex].m_childrenLength > 0) //tests cant have chaildren so we shouldnt do this
+	if (results->m_nodes[domainIndex].m_childrenLength > 0) //group end for domains
 	{
 		for (unsigned int i = 0; i < +depth; i++) { std::cout << indentationSpaceSingle; }
-		std::cout << indentationSpaceSingle << "\n";
+		std::cout << "}" << "\n";
 	}
 }

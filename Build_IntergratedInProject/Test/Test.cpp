@@ -12,7 +12,7 @@ uts::UTSTestSeverityCode ExampleTest()
 
 uts::UTSTestSeverityCode ExampleTestB()
 {
-	return uts::UTSTestSeverityCode::TSCPass;
+	return uts::UTSTestSeverityCode::TSCDetectionFailed;
 }
 
 uts::UTSTestSeverityCode ExampleTestC()

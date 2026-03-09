@@ -26,11 +26,15 @@ namespace uts
 		TSCMaxNull,
 	};
 
+
 	/// <summary>
 	/// A function that returns a severity code TSCPass for good anything else for bad.
 	/// </summary>
 	typedef UTSNEW_API UTSTestSeverityCode(*UTSUnitTest)();
 
+	/// <summary>
+	/// the base uts object for storing test, names and results, and parent chhild links
+	/// </summary>
 	class UTSNEW_API UTSNode
 	{
 	public:
@@ -48,6 +52,9 @@ namespace uts
 		void free(void);
 	};
 
+	/// <summary>
+	/// can contain trees, lists, and other thing inbetween 
+	/// </summary>
 	class UTSNEW_API UTSDataContainer
 	{
 	public:
@@ -58,9 +65,15 @@ namespace uts
 		void AddNode(UTSNode node, unsigned int parentIndex);
 	};
 
-	// This class is exported from the dll
+
+	/// <summary>
+	/// creates a tree base repasentation of the tests and of the issues and it will also back propagate issues up the tree if they are more sever than the parents issue
+	/// </summary>
 	class UTSNEW_API UTSTreeConstructor {
 	public:
+		UTSTreeConstructor(const UTSTreeConstructor& other) = delete;
+		UTSTreeConstructor& operator=(const UTSTreeConstructor& other) = delete;
+
 		UTSTreeConstructor(void);
 		UTSTreeConstructor(const char* rootName);
 		~UTSTreeConstructor(void);
@@ -128,6 +141,48 @@ namespace uts
 		UTSDataContainer* m_treeMain = nullptr;
 	};
 
+	/// <summary>
+	/// creates a list base repasentation of tests, notices and the issues
+	/// </summary>
+	class UTSNEW_API UTSListConstructor
+	{
+		UTSListConstructor(const UTSListConstructor& other) = delete;
+		UTSListConstructor& operator=(const UTSListConstructor& other) = delete;
+
+		/// <summary>
+		/// adds a test to the list
+		/// </summary>
+		/// <param name="identifyer"></param>
+		/// <param name="test"></param>
+		void AddTest(const char* identifyer, UTSUnitTest test);
+
+		/// <summary>
+		/// adds a notice
+		/// </summary>
+		/// <param name="notice">notice name</param>
+		void AddNotice(const char* notice);
+
+
+		/// <summary>
+		/// wipes the list
+		/// </summary>
+		void ClearList(void);
+
+
+		/// <summary>
+		/// Runs thougth the tree exacuting every test it finds on the way and storing the result.
+		/// </summary>
+		void RunTests(void);
+
+		/// <summary>
+		/// Get the tree.
+		/// </summary>
+		/// <returns>The tree.</returns>
+		UTSDataContainer* GetContainer(void);
+	private:
+		UTSDataContainer* m_listMain = nullptr;
+
+	}
 
 
 	/// <summary>
