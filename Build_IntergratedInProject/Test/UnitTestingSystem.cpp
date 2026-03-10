@@ -1,8 +1,3 @@
-// utsNew.cpp : Defines the exported functions for the DLL.
-//
-
-#include "pch.h"
-#include "framework.h"
 
 #include "UnitTestingSystem.h"
 
@@ -198,7 +193,10 @@ void uts::UTSTreeConstructor::RunTests(void* args)
 	}
 }
 
-
+uts::UTSDataContainer* uts::UTSTreeConstructor::GetContainer(void)
+{
+	return m_treeMain;
+}
 
 
 void uts::UTSTreeConstructor::DomainIdStackPush(unsigned int item)
@@ -241,6 +239,7 @@ unsigned int uts::UTSTreeConstructor::DomainIdStackRead()
 
 uts::UTSListConstructor::UTSListConstructor(void)
 {
+	m_listMain = new UTSDataContainer();
 }
 
 uts::UTSListConstructor::~UTSListConstructor(void)
@@ -266,6 +265,7 @@ void uts::UTSListConstructor::AddTest(const char* identifyer, UTSUnitTest test)
 
 	newDomain.m_identifyer = idBuffer;
 	m_listMain->AddNode(newDomain, newDomainIndex);
+	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength +1; //so this list prints
 }
 
 void uts::UTSListConstructor::AddNotice(const char* notice)

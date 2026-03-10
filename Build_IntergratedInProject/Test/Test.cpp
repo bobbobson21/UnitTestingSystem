@@ -3,33 +3,49 @@
 
 #include <iostream>
 
-#include "utsNew/UnitTestingSystem.h"
+//#include "utsNew/UnitTestingSystem.h"
+#include "UnitTestingSystem.h"
 
-uts::UTSTestSeverityCode ExampleTest()
+void ExampleTest(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return uts::UTSTestSeverityCode::TSCFail;
+	(*outCode) = uts::UTSTestSeverityCode::TSCFail;
+	(*OutDescription) = new char[8] {"you gay"};
 }
 
-uts::UTSTestSeverityCode ExampleTestB()
+void ExampleTestB(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return uts::UTSTestSeverityCode::TSCDetectionFailed;
+	(*outCode) = uts::UTSTestSeverityCode::TSCPass;
 }
 
-uts::UTSTestSeverityCode ExampleTestC()
+void ExampleTestC(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return uts::UTSTestSeverityCode::TSCPass;
+	(*outCode) = uts::UTSTestSeverityCode::TSCPass;
 }
 
-uts::UTSTestSeverityCode ExampleTestD()
+void ExampleTestD(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return uts::UTSTestSeverityCode::TSCPass;
+	(*outCode) = uts::UTSTestSeverityCode::TSCWarning;
+	(*OutDescription) = new char[40] {"This is an example of a description lol"};
 }
 
 int main()
 {
-	uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
+	uts::UTSListConstructor mainTestTree = uts::UTSListConstructor();
 
-	mainTestTree.PushDomain("namespace", "testing");
+	mainTestTree.AddTest("ExampleTest", ExampleTest);
+	mainTestTree.AddTest("ExampleTestB", ExampleTestB);
+	mainTestTree.AddNotice("running C block");
+	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
+	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
+	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
+	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
+	mainTestTree.AddNotice("running D block");
+	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
+	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
+	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
+	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
+
+	/*mainTestTree.PushDomain("namespace", "testing");
 	mainTestTree.PushDomain("class", "tester");
 
 	mainTestTree.PushDomain("static");
@@ -51,11 +67,11 @@ int main()
 	mainTestTree.PopDomain();
 
 	mainTestTree.PopDomain();
-	mainTestTree.PopDomain();
+	mainTestTree.PopDomain();*/
 
-	mainTestTree.RunTests();
+	mainTestTree.RunTests(nullptr);
 
-	uts::ConOutputTestResults(mainTestTree.GetContainer(), true);
+	uts::ConOutputTestResults(mainTestTree.GetContainer(), true, true);
 
     std::cout << "Hello World!\n";
 }

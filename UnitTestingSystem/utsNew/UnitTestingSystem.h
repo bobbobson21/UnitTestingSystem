@@ -29,8 +29,9 @@ namespace uts
 
 	/// <summary>
 	/// A function that returns a severity code TSCPass for good anything else for bad.
+	/// It also contains two pramaters the first one is an object that can be passed to all the tests thougth the run test function and the second one is a description of the error
 	/// </summary>
-	typedef UTSNEW_API UTSTestSeverityCode(*UTSUnitTest)();
+	typedef UTSNEW_API void(*UTSUnitTest)(UTSTestSeverityCode*, char**, void*);
 
 	/// <summary>
 	/// the base uts object for storing test, names and results, and parent chhild links
@@ -39,15 +40,15 @@ namespace uts
 	{
 	public:
 		char* m_identifyer = nullptr;
-		char* m_runNotice = nullptr; ///if set this will output text when its coaspoing test runs and it can also be rendered in the test tree output m_identifyer or test result will not be rendered
+		char* m_runningTestsBellowNotice = nullptr;  ///if set this will output text but it will not be able to do anything else including actually running its test
 
+		unsigned int m_parent = 0; ///a parent is always required but if it parents its self then it will function as if there is no parent
 		unsigned int* m_children = nullptr;
 		unsigned int m_childrenLength = 0;
 
-		unsigned int m_parent = 0;
-
 		UTSUnitTest m_test = nullptr;
-		UTSTestSeverityCode m_severityCodeOfTest = UTSTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
+		UTSTestSeverityCode m_testResultSeverityCode = UTSTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
+		char* m_testResultDescriptionBuffer = nullptr; ///a description of the reason why the test failed
 
 		void free(void);
 	};
@@ -71,8 +72,9 @@ namespace uts
 	/// </summary>
 	class UTSNEW_API UTSTreeConstructor {
 	public:
-		UTSTreeConstructor(const UTSTreeConstructor& other) = delete;
-		UTSTreeConstructor& operator=(const UTSTreeConstructor& other) = delete;
+		UTSTreeConstructor(UTSTreeConstructor&& other) = default;
+		UTSTreeConstructor& operator=(UTSTreeConstructor&& other) = default;
+
 
 		UTSTreeConstructor(void);
 		UTSTreeConstructor(const char* rootName);
@@ -119,7 +121,7 @@ namespace uts
 		/// <summary>
 		/// Runs thougth the tree exacuting every test it finds on the way and storing the result.
 		/// </summary>
-		void RunTests(void);
+		void RunTests(void* args);
 
 		/// <summary>
 		/// Get the tree.
@@ -146,8 +148,12 @@ namespace uts
 	/// </summary>
 	class UTSNEW_API UTSListConstructor
 	{
-		UTSListConstructor(const UTSListConstructor& other) = delete;
-		UTSListConstructor& operator=(const UTSListConstructor& other) = delete;
+	public:
+		UTSListConstructor(void);
+		~UTSListConstructor(void);
+
+		UTSListConstructor(UTSListConstructor&& other) = default;
+		UTSListConstructor& operator=(UTSListConstructor&& other) = default;
 
 		/// <summary>
 		/// adds a test to the list
@@ -172,7 +178,7 @@ namespace uts
 		/// <summary>
 		/// Runs thougth the tree exacuting every test it finds on the way and storing the result.
 		/// </summary>
-		void RunTests(void);
+		void RunTests(void* args);
 
 		/// <summary>
 		/// Get the tree.
@@ -181,15 +187,14 @@ namespace uts
 		UTSDataContainer* GetContainer(void);
 	private:
 		UTSDataContainer* m_listMain = nullptr;
-
-	}
+	};
 
 
 	/// <summary>
 	/// Outputs the results to the console.
 	/// </summary>
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
-	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false);
+	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false, bool outputFailureDesriptions = false);
 
 	/// <summary>
 	/// outputs the charater and color related to a test code into the console
@@ -203,6 +208,6 @@ namespace uts
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
 	/// <param name="domainIndex">The node we are starting from.</param>
 	/// <param name="depth">Our depth so far.</param>
-	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false);
-
+	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false, bool outputFailureDesriptions = false);
 }
+

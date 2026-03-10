@@ -3,11 +3,7 @@
 
 #define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
 
-#ifdef UTSNEW_EXPORTS
-#define UTSNEW_API __declspec(dllexport)
-#else
-#define UTSNEW_API __declspec(dllimport)
-#endif
+#define UTSNEW_API
 
 namespace uts
 {
@@ -26,41 +22,57 @@ namespace uts
 		TSCMaxNull,
 	};
 
+
 	/// <summary>
 	/// A function that returns a severity code TSCPass for good anything else for bad.
+	/// It also contains two pramaters the first one is an object that can be passed to all the tests thougth the run test function and the second one is a description of the error
 	/// </summary>
-	typedef UTSNEW_API UTSTestSeverityCode(*UTSUnitTest)();
+	typedef UTSNEW_API void(*UTSUnitTest)(UTSTestSeverityCode*, char**, void*);
 
+	/// <summary>
+	/// the base uts object for storing test, names and results, and parent chhild links
+	/// </summary>
 	class UTSNEW_API UTSNode
 	{
 	public:
 		char* m_identifyer = nullptr;
-		char* m_runNotice = nullptr; ///if set this will output text when its coaspoing test runs and it can also be rendered in the test tree output m_identifyer or test result will not be rendered
+		char* m_runningTestsBellowNotice = nullptr;  ///if set this will output text but it will not be able to do anything else including actually running its test
 
+		unsigned int m_parent = 0; ///a parent is always required but if it parents its self then it will function as if there is no parent
 		unsigned int* m_children = nullptr;
 		unsigned int m_childrenLength = 0;
 
-		unsigned int m_parent = 0;
-
 		UTSUnitTest m_test = nullptr;
-		UTSTestSeverityCode m_severityCodeOfTest = UTSTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
+		UTSTestSeverityCode m_testResultSeverityCode = UTSTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
+		char* m_testResultDescriptionBuffer = nullptr; ///a description of the reason why the test failed
 
 		void free(void);
 	};
 
+	/// <summary>
+	/// can contain trees, lists, and other thing inbetween 
+	/// </summary>
 	class UTSNEW_API UTSDataContainer
 	{
 	public:
 		UTSNode* m_nodes = nullptr;
 		unsigned int m_nodesLength = 0;
+		unsigned int m_rootObjectsLength = 1;
 
 		void free(void); ///use this when you are done with the tree
 		void AddNode(UTSNode node, unsigned int parentIndex);
 	};
 
-	// This class is exported from the dll
+
+	/// <summary>
+	/// creates a tree base repasentation of the tests and of the issues and it will also back propagate issues up the tree if they are more sever than the parents issue
+	/// </summary>
 	class UTSNEW_API UTSTreeConstructor {
 	public:
+		UTSTreeConstructor(UTSTreeConstructor&& other) = default;
+		UTSTreeConstructor& operator=(UTSTreeConstructor&& other) = default;
+
+
 		UTSTreeConstructor(void);
 		UTSTreeConstructor(const char* rootName);
 		~UTSTreeConstructor(void);
@@ -106,7 +118,7 @@ namespace uts
 		/// <summary>
 		/// Runs thougth the tree exacuting every test it finds on the way and storing the result.
 		/// </summary>
-		void RunTests(void);
+		void RunTests(void* args);
 
 		/// <summary>
 		/// Get the tree.
@@ -128,13 +140,58 @@ namespace uts
 		UTSDataContainer* m_treeMain = nullptr;
 	};
 
+	/// <summary>
+	/// creates a list base repasentation of tests, notices and the issues
+	/// </summary>
+	class UTSNEW_API UTSListConstructor
+	{
+	public:
+		UTSListConstructor(void);
+		~UTSListConstructor(void);
+
+		UTSListConstructor(UTSListConstructor&& other) = default;
+		UTSListConstructor& operator=(UTSListConstructor&& other) = default;
+
+		/// <summary>
+		/// adds a test to the list
+		/// </summary>
+		/// <param name="identifyer"></param>
+		/// <param name="test"></param>
+		void AddTest(const char* identifyer, UTSUnitTest test);
+
+		/// <summary>
+		/// adds a notice
+		/// </summary>
+		/// <param name="notice">notice name</param>
+		void AddNotice(const char* notice);
+
+
+		/// <summary>
+		/// wipes the list
+		/// </summary>
+		void ClearList(void);
+
+
+		/// <summary>
+		/// Runs thougth the tree exacuting every test it finds on the way and storing the result.
+		/// </summary>
+		void RunTests(void* args);
+
+		/// <summary>
+		/// Get the tree.
+		/// </summary>
+		/// <returns>The tree.</returns>
+		UTSDataContainer* GetContainer(void);
+	private:
+		UTSDataContainer* m_listMain = nullptr;
+	};
 
 
 	/// <summary>
 	/// Outputs the results to the console.
 	/// </summary>
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
-	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false);
+	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false, bool outputFailureDesriptions = false);
 
 	/// <summary>
 	/// outputs the charater and color related to a test code into the console
@@ -148,6 +205,6 @@ namespace uts
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
 	/// <param name="domainIndex">The node we are starting from.</param>
 	/// <param name="depth">Our depth so far.</param>
-	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false);
-
+	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false, bool outputFailureDesriptions = false);
 }
+

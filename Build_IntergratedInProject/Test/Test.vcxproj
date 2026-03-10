@@ -127,22 +127,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="lib\UnitTestingSystem.idb" />
-    <None Include="lib\UnitTestingSystem.pdb" />
-    <None Include="lib\utsNew\utsNew.dll" />
-    <None Include="lib\utsNew\utsNew.exp" />
-    <None Include="lib\utsNew\utsNew.pdb" />
-    <None Include="lib\utsNew.dll" />
-    <None Include="lib\utsNew.exp" />
-    <None Include="lib\utsNew.pdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\utsNew.lib" />
+    <ClCompile Include="UnitTestingSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\utsNew\UnitTestingSystem.h" />
+    <ClInclude Include="UnitTestingSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
