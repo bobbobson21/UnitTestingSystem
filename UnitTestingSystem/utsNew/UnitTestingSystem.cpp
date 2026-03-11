@@ -25,6 +25,7 @@ void uts::UTSDataContainer::free(void)
 
 	delete[] m_nodes;
 	m_nodesLength = 0;
+	m_rootObjectsLength = 0;
 }
 
 void uts::UTSDataContainer::AddNode(UTSNode node, unsigned int parentIndex)
@@ -149,6 +150,8 @@ void uts::UTSTreeConstructor::Replant(const char* identifyer)
 	m_treeMain->free();
 	DomainIdStackFree();
 
+	m_treeMain->m_rootObjectsLength = 1;
+
 	//make new root node
 	unsigned int rootIndex = 0; //it cant be anything else
 
@@ -198,7 +201,10 @@ void uts::UTSTreeConstructor::RunTests(void* args)
 	}
 }
 
-
+uts::UTSDataContainer* uts::UTSTreeConstructor::GetContainer(void)
+{
+	return m_treeMain;
+}
 
 
 void uts::UTSTreeConstructor::DomainIdStackPush(unsigned int item)
@@ -241,6 +247,7 @@ unsigned int uts::UTSTreeConstructor::DomainIdStackRead()
 
 uts::UTSListConstructor::UTSListConstructor(void)
 {
+	m_listMain = new UTSDataContainer();
 }
 
 uts::UTSListConstructor::~UTSListConstructor(void)
@@ -266,6 +273,7 @@ void uts::UTSListConstructor::AddTest(const char* identifyer, UTSUnitTest test)
 
 	newDomain.m_identifyer = idBuffer;
 	m_listMain->AddNode(newDomain, newDomainIndex);
+	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
 }
 
 void uts::UTSListConstructor::AddNotice(const char* notice)
@@ -277,6 +285,7 @@ void uts::UTSListConstructor::AddNotice(const char* notice)
 	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_listMain->AddNode(newDomain, newDomainIndex);
+	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
 }
 
 
@@ -316,9 +325,12 @@ void uts::ConOutputTestResults(const UTSDataContainer* results, bool outputRunNo
 	std::cout << "======================================================================================================" << "\n\n";
 	std::cout << "\033[0m";
 
-	int startingIndexOfTree = 0; //root is always 0
 	int startingDepth = 0;
-	ConOutputDomainsAndSubDomains(results, startingIndexOfTree, startingDepth, outputRunNotices, outputFailureDesriptions); //start with root and depth 0
+
+	for (unsigned int indexOfRootNode = 0; indexOfRootNode < results->m_rootObjectsLength; indexOfRootNode++)
+	{
+		ConOutputDomainsAndSubDomains(results, indexOfRootNode, startingDepth, outputRunNotices, outputFailureDesriptions); //start with root and depth 0
+	}
 
 	std::cout << "\033[0;96;49m" << "\n";
 	std::cout << "======================================================================================================" << "\n";
@@ -382,13 +394,13 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 
 	if (outputFailureDesriptions == true && results->m_nodes[domainIndex].m_testResultDescriptionBuffer != nullptr) //DOSE DESRCIPTION
 	{
-		std::cout << " <" << results->m_nodes[domainIndex].m_testResultDescriptionBuffer << ">";
+		std::cout << ": <" << results->m_nodes[domainIndex].m_testResultDescriptionBuffer << ">";
 	}
 
 	std::cout << "\n";
 
 
-	if (results->m_nodes[domainIndex].m_childrenLength > 0) //group stat for domains
+	if (results->m_nodes[domainIndex].m_childrenLength > 0) //group start for domains
 	{
 		for (unsigned int i = 0; i < depth; i++) { std::cout << indentationSpaceSingle; }
 		std::cout << "{" << "\n";
@@ -411,4 +423,5 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 		std::cout << "}" << "\n";
 	}
 }
+
 

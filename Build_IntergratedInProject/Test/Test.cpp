@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-//#include "utsNew/UnitTestingSystem.h"
-#include "UnitTestingSystem.h"
+#include "utsNew/UnitTestingSystem.h"
+//#include "UnitTestingSystem.h"
 
 void ExampleTest(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
@@ -30,22 +30,9 @@ void ExampleTestD(uts::UTSTestSeverityCode* outCode, char** OutDescription, void
 
 int main()
 {
-	uts::UTSListConstructor mainTestTree = uts::UTSListConstructor();
+	uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
 
-	mainTestTree.AddTest("ExampleTest", ExampleTest);
-	mainTestTree.AddTest("ExampleTestB", ExampleTestB);
-	mainTestTree.AddNotice("running C block");
-	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
-	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
-	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
-	mainTestTree.AddTest("ExampleTestC", ExampleTestC);
-	mainTestTree.AddNotice("running D block");
-	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
-	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
-	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
-	mainTestTree.AddTest("ExampleTestD", ExampleTestD);
-
-	/*mainTestTree.PushDomain("namespace", "testing");
+	mainTestTree.PushDomain("namespace", "testing");
 	mainTestTree.PushDomain("class", "tester");
 
 	mainTestTree.PushDomain("static");
@@ -67,11 +54,29 @@ int main()
 	mainTestTree.PopDomain();
 
 	mainTestTree.PopDomain();
-	mainTestTree.PopDomain();*/
+	mainTestTree.PopDomain();
 
 	mainTestTree.RunTests(nullptr);
-
 	uts::ConOutputTestResults(mainTestTree.GetContainer(), true, true);
+
+
+	/*uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
+
+	mainTestList.AddTest("ExampleTest", ExampleTest);
+	mainTestList.AddTest("ExampleTestB", ExampleTestB);
+	mainTestList.AddNotice("running C block");
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddNotice("running D block");
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	
+	mainTestList.RunTests(nullptr);
+	uts::ConOutputTestResults(mainTestList.GetContainer(), true, false);*/
 
     std::cout << "Hello World!\n";
 }

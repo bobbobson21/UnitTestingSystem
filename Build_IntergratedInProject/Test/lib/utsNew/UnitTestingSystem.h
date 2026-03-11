@@ -3,7 +3,11 @@
 
 #define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
 
-#define UTSNEW_API
+#ifdef UTSNEW_EXPORTS
+#define UTSNEW_API __declspec(dllexport)
+#else
+#define UTSNEW_API __declspec(dllimport)
+#endif
 
 namespace uts
 {
@@ -57,7 +61,7 @@ namespace uts
 	public:
 		UTSNode* m_nodes = nullptr;
 		unsigned int m_nodesLength = 0;
-		unsigned int m_rootObjectsLength = 1;
+		unsigned int m_rootObjectsLength = 0;
 
 		void free(void); ///use this when you are done with the tree
 		void AddNode(UTSNode node, unsigned int parentIndex);

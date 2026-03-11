@@ -18,16 +18,18 @@
     <ClCompile Include="Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTestingSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\utsNew\UnitTestingSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitTestingSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\utsNew.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lib\utsNew\utsNew.dll" />
+    <None Include="lib\utsNew\utsNew.exp" />
+    <None Include="lib\utsNew\utsNew.pdb" />
   </ItemGroup>
 </Project>

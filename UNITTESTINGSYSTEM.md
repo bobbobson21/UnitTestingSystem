@@ -1,7 +1,7 @@
 ﻿
-# namespace: uts; enum UTSTestSeverityCode; classes: UTSNode, UTSDataContainer, UTSTreeConstructor<br>
+# namespace: uts; enum UTSTestSeverityCode; classes: UTSNode, UTSDataContainer, UTSListConstructor, UTSTreeConstructor<br>
 
-| library | system | testing | copyable | instantiate |
+| library | system | testing | moveable | instantiate |
 |---------|--------|---------|----------|-------------|
 
 ## Contents (uses github MD parser)<br>
@@ -13,22 +13,24 @@
    &#xa0;&#xa0;&#xa0;^[An example of how to use domains](#An-example-of-how-to-use-domains)<br>
    &#xa0;&#xa0;&#xa0;^[An example of how to use tests](#An-example-of-how-to-use-tests)<br>
    &#xa0;&#xa0;&#xa0;^[How to render results](#How-to-render-results)<br>
+   &#xa0;&#xa0;&#xa0;^[How to use the list constructor](#How-to-render-results)<br>
    o [Importance](#Importance)<br>
    o [Reflection 1.0.0](#Reflection-100)<br>
-   o [Reflection 2.0.0](#Reflection-100)<br>
+   o [Reflection 2.0.0](#Reflection-200)<br>
    o [Further reading](#Further-reading)<br>
+
 
 <br>
 
 ## Types<br>
 
-| types                                          | meaning                                                                                                         |
-|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| enum UTSTestSeverityCode : char                | stores the diffrent types of SeverityCodes with TSCPass being the primary code.                                 |
-| typedef UTSTestSeverityCode(*UnitTest)()       | A format for storing the pointer to unit test functions.                                                        |
-| clsss UTSNode;                                 | Contains infomation on tests, child nodes, and parent nodes.                                                    |
-| class UTSDataContainer                         | A format for stoing a collection of UTSNode that can be access as both a vector and a tree.                     |
-| class UTSTreeConstructor                       | Allows you to build and run you unit test and acts a sort of middle man between you and the raw UTSTree.        |
+| types                                                            | meaning                                                                                                                                                                    |
+|------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| enum UTSTestSeverityCode : char                                  | stores the diffrent types of SeverityCodes with TSCPass being the primary code.                                                                                            |
+| typedef void(*UTSUnitTest)(UTSTestSeverityCode*, char**, void*)  | A format for storing the pointer to unit test functions. the first two arguments can set the code and error description and the last one is how arguments can be recived.  |
+| clsss UTSNode;                                                   | Contains infomation on tests, child nodes, and parent nodes.                                                                                                               |
+| class UTSDataContainer                                           | A format for stoing a collection of UTSNode that can be access as both a vector and a tree.                                                                                |
+| class UTSTreeConstructor                                         | Allows you to build and run you unit test and acts a sort of middle man between you and the raw UTSTree.                                                                   |
 
 
 ## Functions<br>
@@ -41,42 +43,51 @@
 | void PushPopTest(const char* identifyer, UnitTest test)   | Pushes a test to a tree and pops it as well because tests cant have children.                                                                    |
 | void PushPopNotice(const char* notice)                    | Sends a notices to the console about the nexts test being exacuted bellow.                                                                       |
 | void Replant(const char* identifyer = "root")             | Kills the tree and creates another one with a new root which can be given a name.                                                                |
-| UTSTree RunTests()                                        | Runs all the unit test with o(n) time thanks to how UTSDataContainer works. Then it stores the results in the nodes of the tree.                 |
+| UTSTree RunTests(void* args)                              | Runs all the unit test with o(n) time thanks to how UTSDataContainer works. arguments can also be passed thougth a args struct into void* args.  |
+| UTSTree GetContainer()                                    | Gets a copy of the currently constructed tree.                                                                                                   |
+
+| public UTSListConstructor class definitions               | what it dose                                                                                                                                     |
+|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| void AddTest(const char* identifyer, UnitTest test)       | Add a test to the list with a name.                                                                                                              |
+| void AddNotice(const char* notice)                        | Sends a notices to the console about the nexts test being exacuted bellow.                                                                       |
+| void ClearList()                                          | Kills the list and empties it. tests can then be readded with AddTest.                                                                           |
+| UTSTree RunTests(void* args)                              | Runs all the unit test with o(n) time thanks to how UTSDataContainer works. Then it stores the results in the nodes of the tree.                 |
 | UTSTree GetContainer()                                    | Gets a copy of the currently constructed tree.                                                                                                   |
 
 | public UTSDataContainer class definitions            | what it dose                                                                                                                                     |
 |------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| void free()                                          | Frees the nodes from the container dose not free the container that shold be dme manually using detete.                                          |
+| void free()                                          | Frees the nodes from the container dose not free the container that shold be do manually using detete.                                           |
 | void AddNode(UTSNode node, unsigned int parentIndex) | Adds a node to the container/tree.                                                                                                               |
 
 | public UTSDataContainer class definitions            | what it dose                                                                                                                                     |
 |------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | void free()                                          | Frees the node and it should not be called if its in a container                                                                                 |
 
-| uts namespace definitions                                                                        | what it dose                                                                                               |  
-|--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| void ConOutputTestResults(const UTSDataContainer* results)                                       | Outputs a UTS tree to console with infomation on what errors occore as long as the tests have been runned. |
-| void ConOutputTestSeverityCode(UTSTestSeverityCode testCode);                                    | Not really ment to be used but it outputs .                                                                |
-| void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, int domainIndex, int depth); | Not really ment to be used but it outputs a small section of the tree to the console.                      |
+| uts namespace definitions                                                                                                                                              | what it dose                                                                                                       |  
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false, bool outputFailureDesriptions = false)                                       | Outputs a UTSDataContainer to console with infomation on what errors occore as long as the tests have been runned. |
+| void ConOutputTestSeverityCode(UTSTestSeverityCode testCode);                                                                                                          | Not really ment to be used but it outputs a charter with a color related to the code.                              |
+| void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, int domainIndex, int depth, bool outputRunNotices = false, bool outputFailureDesriptions = false); | Not really ment to be used but it outputs a small section of the tree to the console.                              |
+
 
 <br>
 
 ## How it works overview<br>
 This system uses a lot of custom made logic in order work. However the domains work due to a stack buff and every time a domain is added a new index is added to the buff and this index also relates to a index in the UTSTree. the node at whos related index as previouselly at the top of the tree gets a child link index added to it and the new node also gets it parent index set to that of the last node index at the top of the stack
 
-ConOutputTestResults renderers/outputs the results and it should work on all platforms apart from play station and UTSTreeConstructor is how you actually put together the test structure.
+ConOutputTestResults renderers/outputs the results and it should work on all platforms apart from play station and UTSTreeConstructor/UTSListConstructor is how you actually put together the test structure.
 
 Tests don't effect the stack as they can not have children but they do still link to there parent node who index will be at the top of the stack. Test functions also require no parameters and a UTSTestSeverityCode return there are no restrictions as to what can go in a test function beyond that. UTSTestSeverityCodes will override lower codeds in parent propagation if they have a higher value.
 
-|enum UTSTestSeverityCode codes | description                                                                              | value |
-|-------------------------------|------------------------------------------------------------------------------------------|-------|
-|TSCPass                        | The test passed and the will be overrided by eveything.                                  | 0     |
-|TSCWarning                     | A warning happend but nothing really bad occored.                                        | 1     |
-|TSCDetectionFailed             | Was unable to detect if the test worked or failed.                                       | 2     |
-|TSCTryCatchFail                | A global try catch around the test failed.                                               | 3     |
-|TSCFail                        | The test failed.                                                                         | 4     |
-|TSCCrashFail                   | The test would of caused a crash.                                                        | 5     |
-|TSCMaxNull                     | An equivalance to TSCDetectionFailed but in can be used as the tob bounds as a for loop. | 6     |
+|enum UTSTestSeverityCode codes | description                                                                                              | value |
+|-------------------------------|----------------------------------------------------------------------------------------------------------|-------|
+|TSCPass                        | The test passed and the will be overrided by eveything.                                                  | 0     |
+|TSCWarning                     | A warning happend but nothing really bad occored.                                                        | 1     |
+|TSCDetectionFailed             | Was unable to detect if the test worked or failed.                                                       | 2     |
+|TSCTryCatchFail                | A global try catch around the test failed.                                                               | 3     |
+|TSCFail                        | The test failed.                                                                                         | 4     |
+|TSCCrashFail                   | The test would of caused a crash.                                                                        | 5     |
+|TSCMaxNull                     | An equivalance to TSCDetectionFailed but in can be used as the to act as the upper bounds as a for loop. | 6     |
 
 <br>
 
@@ -88,19 +99,25 @@ An example of a unit test system tree can be found bellow. This example contains
 #include <iostream>
 #include "lib/UnitTestingSystem.h"
 
-bool ExampleTest()
+void ExampleTest(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return false;
+	(*outCode) = uts::UTSTestSeverityCode::TSCFail;
 }
 
-bool ExampleTestB()
+void ExampleTestB(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return true;
+	(*outCode) = uts::UTSTestSeverityCode::TSCPass;
 }
 
-bool ExampleTestC()
+void ExampleTestC(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
 {
-	return true;
+	(*outCode) = uts::UTSTestSeverityCode::TSCPass;
+}
+
+void ExampleTestD(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
+{
+	(*outCode) = uts::UTSTestSeverityCode::TSCWarning;
+	(*OutDescription) = new char[40] {"This is an example of a description lol"};
 }
 
 int main()
@@ -129,7 +146,7 @@ int main()
 	mainTestTree.PopDomain();
 	mainTestTree.PopDomain();
 
-	mainTestTree.RunTests();
+	mainTestTree.RunTests(nullptr);
 
 	uts::ConOutputTestResults(mainTestTree.GetContainer());
 
@@ -222,6 +239,7 @@ bool ExampleTest()
 	mainTestTree.PopDomain();
 ```
 
+
 <br>
 
 ### How to render results<br>
@@ -239,9 +257,34 @@ bool ExampleTest() //creating tests
 	mainTestTree.PushTest("ExampleTest", ExampleTest);
 	mainTestTree.PopDomain();
 
-	mainTestTree.RunTests(); //outputing results
+	mainTestTree.RunTests(nullptr); //outputing results
 	uts::ConOutputTestResults(mainTestTree.GetContainer());
 
+```
+
+<br>
+
+### How to use the list constructor<br>
+The list constructor is pretty much the tree constuctor except without domains or pushes or pops insted its just add and once you undestand this using it is as easy as using the tree constuctor.
+
+```
+	uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
+
+	mainTestList.AddTest("ExampleTest", ExampleTest);
+	mainTestList.AddTest("ExampleTestB", ExampleTestB);
+	mainTestList.AddNotice("running C block");
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddNotice("running D block");
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	
+	mainTestList.RunTests(nullptr);
+	uts::ConOutputTestResults(mainTestList.GetContainer(), true, false);
 ```
 
 <br>
@@ -249,8 +292,8 @@ bool ExampleTest() //creating tests
 ## Importance<br>
 Although this is not actually needed for the final version of the engine its important because it helps ensure better code quality and it also provides proof that the code is being maintained to a high degree.
 
-<br>
 
+<br>
 
 ## Reflection 1.0.0<br>
 
@@ -291,7 +334,7 @@ Next I want to disclaimer support so that tests which can freeze up the program 
 ## Reflection 2.0.0<br>
 
 ### What was developed<br>
-The library was refactored into a dll which makes it much more portable and modular and there are now more than two types of issue states as well as notices which can be used to tell you when a test is running that well take a long time. 
+The library was refactored into a dll which makes it much more portable and modular and there are now more than two types of issue states as well as notices which can be used to tell you when a test is running that well take a long time. Likwise the UTSListConstructor was also developed for a simple list based view of the issies
 
 <br>
 
@@ -327,4 +370,4 @@ Test everything and ask for more work.
 <br>
 
 
->library and document done by: Kyle Edwards, e017770n@student.staffs.ac.uk&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;First created: 06/3/2026&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;Last updated: 09/03/2026
+>library and document done by: Kyle Edwards, e017770n@student.staffs.ac.uk&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;First created: 06/3/2026&#xa0;&#xa0;&#xa0;\|&#xa0;&#xa0;&#xa0;Last updated: 11/03/2026

@@ -61,6 +61,7 @@ namespace uts
 	public:
 		UTSNode* m_nodes = nullptr;
 		unsigned int m_nodesLength = 0;
+		unsigned int m_rootObjectsLength = 0;
 
 		void free(void); ///use this when you are done with the tree
 		void AddNode(UTSNode node, unsigned int parentIndex);
