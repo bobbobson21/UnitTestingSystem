@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <fstream>
 
 #define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
 
@@ -14,7 +15,7 @@ namespace uts
 	/// <summary>
 	/// the lower down on the list it is the more important it is
 	/// </summary>
-	enum UTSNEW_API UTSTestSeverityCode : char
+	enum UTSNEW_API UTSUnitTestSeverityCode : char
 	{
 		TSCPass,
 		TSCWarning,
@@ -26,12 +27,24 @@ namespace uts
 		TSCMaxNull,
 	};
 
+	/// <summary>
+	/// stores all the test results from the unit test
+	/// </summary>
+	class UTSNEW_API UTSUnitTestResults
+	{
+	public:
+		UTSUnitTestSeverityCode m_testResultSeverityCode = UTSUnitTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
+		char* m_testResultDescriptionBuffer = nullptr; ///a description of the reason why the test failed
+		char* m_fileLocation = nullptr;
+
+		void free(void);
+	};
 
 	/// <summary>
 	/// A function that returns a severity code TSCPass for good anything else for bad.
 	/// It also contains two pramaters the first one is an object that can be passed to all the tests thougth the run test function and the second one is a description of the error
 	/// </summary>
-	typedef UTSNEW_API void(*UTSUnitTest)(UTSTestSeverityCode*, char**, void*);
+	typedef UTSNEW_API UTSUnitTestResults(*UTSUnitTest)(void* args);
 
 	/// <summary>
 	/// the base uts object for storing test, names and results, and parent chhild links
@@ -47,8 +60,7 @@ namespace uts
 		unsigned int m_childrenLength = 0;
 
 		UTSUnitTest m_test = nullptr;
-		UTSTestSeverityCode m_testResultSeverityCode = UTSTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
-		char* m_testResultDescriptionBuffer = nullptr; ///a description of the reason why the test failed
+		UTSUnitTestResults m_testResults = UTSUnitTestResults();
 
 		void free(void);
 	};
@@ -190,18 +202,37 @@ namespace uts
 		UTSDataContainer* m_listMain = nullptr;
 	};
 
+	/// <summary>
+	/// con out settings
+	/// </summary>
+	class UTSNEW_API ConOutputSettings
+	{
+	public:
+		bool m_outputRunNotices = false; ///outputs the notices as tree/list elements
+		bool m_outputFailureDesriptions = false; ///outputs descriptions
+	};
+
+	/// <summary>
+	/// output to external program settings
+	/// </summary>
+	class UTSNEW_API ExtOutputSettings
+	{
+	public:
+		bool m_waitForCollection = true; ///if there are alread outputed results wait for them to be collected first
+	};
+
 
 	/// <summary>
 	/// Outputs the results to the console.
 	/// </summary>
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
-	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices = false, bool outputFailureDesriptions = false);
+	UTSNEW_API void ConOutputTestResults(const UTSDataContainer* results, ConOutputSettings settings);
 
 	/// <summary>
 	/// outputs the charater and color related to a test code into the console
 	/// </summary>
 	/// <param name="testCode">the test code</param>
-	UTSNEW_API void ConOutputTestSeverityCode(UTSTestSeverityCode testCode);
+	UTSNEW_API void ConOutputTestSeverityCode(UTSUnitTestSeverityCode testCode);
 
 	/// <summary>
 	/// you shouldnt use this it is ment to be used by ConOutputTestResults only.
@@ -209,6 +240,12 @@ namespace uts
 	/// <param name="results">The data from UTSTreeConstructor.RunTests.</param>
 	/// <param name="domainIndex">The node we are starting from.</param>
 	/// <param name="depth">Our depth so far.</param>
-	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices = false, bool outputFailureDesriptions = false);
+	UTSNEW_API void ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, ConOutputSettings settings);
+
+	/// <summary>
+	/// outputs the results to an extenrnal debuging program
+	/// </summary>
+	/// <returns>was sucessful at doing this</returns>
+	UTSNEW_API bool ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSettings settings);
 }
 

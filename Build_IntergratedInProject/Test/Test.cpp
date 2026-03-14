@@ -6,26 +6,37 @@
 #include "utsNew/UnitTestingSystem.h"
 //#include "UnitTestingSystem.h"
 
-void ExampleTest(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
+uts::UTSUnitTestResults ExampleTest(void* inArgs)
 {
-	(*outCode) = uts::UTSTestSeverityCode::TSCFail;
-	(*OutDescription) = new char[8] {"you gay"};
+	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+
+	return returnData;
 }
 
-void ExampleTestB(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
+uts::UTSUnitTestResults ExampleTestB(void* inArgs)
 {
-	(*outCode) = uts::UTSTestSeverityCode::TSCPass;
+	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCFail;
+	returnData.m_testResultDescriptionBuffer = new char[8] {"you gay"};
+
+	return returnData;
 }
 
-void ExampleTestC(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
+uts::UTSUnitTestResults ExampleTestC(void* inArgs)
 {
-	(*outCode) = uts::UTSTestSeverityCode::TSCPass;
+	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+
+	return returnData;
 }
 
-void ExampleTestD(uts::UTSTestSeverityCode* outCode, char** OutDescription, void* inArgs)
+uts::UTSUnitTestResults ExampleTestD(void* inArgs)
 {
-	(*outCode) = uts::UTSTestSeverityCode::TSCWarning;
-	(*OutDescription) = new char[40] {"This is an example of a description lol"};
+	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+
+	return returnData;
 }
 
 int main()
@@ -57,8 +68,8 @@ int main()
 	mainTestTree.PopDomain();
 
 	mainTestTree.RunTests(nullptr);
-	uts::ConOutputTestResults(mainTestTree.GetContainer(), true, true);
-
+	uts::ConOutputTestResults(mainTestTree.GetContainer(), uts::ConOutputSettings{true, true});
+	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});
 
 	/*uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
 

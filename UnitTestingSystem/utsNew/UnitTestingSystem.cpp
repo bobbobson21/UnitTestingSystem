@@ -6,13 +6,20 @@
 
 #include "UnitTestingSystem.h"
 
+void uts::UTSUnitTestResults::free(void)
+{
+	delete[] m_testResultDescriptionBuffer;
+	delete[] m_fileLocation;
+}
+
 void uts::UTSNode::free(void)
 {
 	delete[] m_children;
 	delete[] m_runningTestsBellowNotice;
 	delete[] m_identifyer;
-	delete[] m_testResultDescriptionBuffer;
 	m_childrenLength = 0;
+
+	m_testResults.free();
 }
 
 
@@ -79,8 +86,10 @@ uts::UTSTreeConstructor::UTSTreeConstructor(const char* rootName)
 
 uts::UTSTreeConstructor::~UTSTreeConstructor(void)
 {
-	free(m_treeMain);
+	m_treeMain->free();
 	DomainIdStackFree();
+
+	delete m_treeMain;
 }
 
 void uts::UTSTreeConstructor::PushDomain(const char* identifyer)
@@ -178,19 +187,19 @@ void uts::UTSTreeConstructor::RunTests(void* args)
 
 		if (m_treeMain->m_nodes[i].m_test != nullptr)
 		{
-			UTSTestSeverityCode resultCode = m_treeMain->m_nodes[i].m_testResultSeverityCode;
-			m_treeMain->m_nodes[i].m_test(&resultCode, &m_treeMain->m_nodes[i].m_testResultDescriptionBuffer, args);
+			m_treeMain->m_nodes[i].m_testResults = m_treeMain->m_nodes[i].m_test(args);
+			UTSUnitTestSeverityCode resultCode = m_treeMain->m_nodes[i].m_testResults.m_testResultSeverityCode;
 
-			if (resultCode != UTSTestSeverityCode::TSCPass) //test failed
+			if (resultCode != UTSUnitTestSeverityCode::TSCPass) //test failed
 			{
-				m_treeMain->m_nodes[i].m_testResultSeverityCode = resultCode;
+				m_treeMain->m_nodes[i].m_testResults.m_testResultSeverityCode = resultCode;
 				int currentTreeTravelIndex = m_treeMain->m_nodes[i].m_parent;
 
 				while (true) //back propagate to parents
 				{
-					if (((unsigned int)resultCode) > ((unsigned int)m_treeMain->m_nodes[currentTreeTravelIndex].m_testResultSeverityCode))
+					if (((unsigned int)resultCode) > ((unsigned int)m_treeMain->m_nodes[currentTreeTravelIndex].m_testResults.m_testResultSeverityCode))
 					{
-						m_treeMain->m_nodes[currentTreeTravelIndex].m_testResultSeverityCode = resultCode;
+						m_treeMain->m_nodes[currentTreeTravelIndex].m_testResults.m_testResultSeverityCode = resultCode;
 					}
 
 					if (currentTreeTravelIndex == m_treeMain->m_nodes[currentTreeTravelIndex].m_parent) { break; } //we cant go back anymore
@@ -253,6 +262,8 @@ uts::UTSListConstructor::UTSListConstructor(void)
 uts::UTSListConstructor::~UTSListConstructor(void)
 {
 	free(m_listMain);
+
+	delete m_listMain;
 }
 
 void uts::UTSListConstructor::AddTest(const char* identifyer, UTSUnitTest test)
@@ -306,7 +317,7 @@ void uts::UTSListConstructor::RunTests(void* args)
 
 		if (m_listMain->m_nodes[i].m_test != nullptr)
 		{
-			m_listMain->m_nodes[i].m_test(&m_listMain->m_nodes[i].m_testResultSeverityCode, &m_listMain->m_nodes[i].m_testResultDescriptionBuffer, args);
+			m_listMain->m_nodes[i].m_test(args);
 		}
 	}
 }
@@ -317,7 +328,7 @@ uts::UTSDataContainer* uts::UTSListConstructor::GetContainer(void)
 }
 
 
-void uts::ConOutputTestResults(const UTSDataContainer* results, bool outputRunNotices, bool outputFailureDesriptions)
+void uts::ConOutputTestResults(const UTSDataContainer* results, ConOutputSettings settings)
 {
 	std::cout << "\033[0;96;49m" << "\n";
 	std::cout << "======================================================================================================" << "\n";
@@ -329,7 +340,7 @@ void uts::ConOutputTestResults(const UTSDataContainer* results, bool outputRunNo
 
 	for (unsigned int indexOfRootNode = 0; indexOfRootNode < results->m_rootObjectsLength; indexOfRootNode++)
 	{
-		ConOutputDomainsAndSubDomains(results, indexOfRootNode, startingDepth, outputRunNotices, outputFailureDesriptions); //start with root and depth 0
+		ConOutputDomainsAndSubDomains(results, indexOfRootNode, startingDepth, settings); //start with root and depth 0
 	}
 
 	std::cout << "\033[0;96;49m" << "\n";
@@ -337,26 +348,26 @@ void uts::ConOutputTestResults(const UTSDataContainer* results, bool outputRunNo
 	std::cout << "\033[0m";
 }
 
-void uts::ConOutputTestSeverityCode(UTSTestSeverityCode testCode)
+void uts::ConOutputTestSeverityCode(UTSUnitTestSeverityCode testCode)
 {
 	switch (testCode)
 	{
-	case UTSTestSeverityCode::TSCPass:
+	case UTSUnitTestSeverityCode::TSCPass:
 		std::cout << "\033[0;32;102m" << "+";
 		break;
-	case UTSTestSeverityCode::TSCWarning:
+	case UTSUnitTestSeverityCode::TSCWarning:
 		std::cout << "\033[0;33;103m" << "~";
 		break;
-	case UTSTestSeverityCode::TSCDetectionFailed:
+	case UTSUnitTestSeverityCode::TSCDetectionFailed:
 		std::cout << "\033[0;30;100m" << "?";
 		break;
-	case UTSTestSeverityCode::TSCTryCatchFail:
+	case UTSUnitTestSeverityCode::TSCTryCatchFail:
 		std::cout << "\033[0;30;45m" << "/";
 		break;
-	case UTSTestSeverityCode::TSCFail:
+	case UTSUnitTestSeverityCode::TSCFail:
 		std::cout << "\033[0;31;101m" << "!";
 		break;
-	case UTSTestSeverityCode::TSCCrashFail:
+	case UTSUnitTestSeverityCode::TSCCrashFail:
 		std::cout << "\033[0;36;106m" << "*";
 		break;
 	case TSCMaxNull: default:
@@ -367,7 +378,7 @@ void uts::ConOutputTestSeverityCode(UTSTestSeverityCode testCode)
 	std::cout << "\033[0m";
 }
 
-void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, bool outputRunNotices, bool outputFailureDesriptions)
+void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, ConOutputSettings settings)
 {
 	char colorBaseWhite[] = "\033[0m";
 
@@ -375,7 +386,7 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 
 	if (results->m_nodes[domainIndex].m_runningTestsBellowNotice != nullptr) //DOSE NOTICES
 	{
-		if (outputRunNotices == true)
+		if (settings.m_outputRunNotices == true)
 		{
 			for (unsigned int i = 0; i < depth; i++) { std::cout << indentationSpaceSingle; }
 			std::cout << "\033[0;96;49m" << "[n] notice: " << results->m_nodes[domainIndex].m_runningTestsBellowNotice << colorBaseWhite << "\n";
@@ -387,14 +398,14 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 	for (unsigned int i = 0; i < depth; i++) { std::cout << indentationSpaceSingle; } //DOSE THE SQUARE SECTION AND THE IDENTIFYER
 	std::cout << "[";
 
-	ConOutputTestSeverityCode(results->m_nodes[domainIndex].m_testResultSeverityCode);
+	ConOutputTestSeverityCode(results->m_nodes[domainIndex].m_testResults.m_testResultSeverityCode);
 
 	std::cout << "] ";
 	std::cout << results->m_nodes[domainIndex].m_identifyer;
 
-	if (outputFailureDesriptions == true && results->m_nodes[domainIndex].m_testResultDescriptionBuffer != nullptr) //DOSE DESRCIPTION
+	if (settings.m_outputFailureDesriptions == true && results->m_nodes[domainIndex].m_testResults.m_testResultDescriptionBuffer != nullptr) //DOSE DESRCIPTION
 	{
-		std::cout << ": <" << results->m_nodes[domainIndex].m_testResultDescriptionBuffer << ">";
+		std::cout << ": <" << results->m_nodes[domainIndex].m_testResults.m_testResultDescriptionBuffer << ">";
 	}
 
 	std::cout << "\n";
@@ -408,7 +419,7 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 
 	for (size_t i = 0; i < results->m_nodes[domainIndex].m_childrenLength; i++)//DOSE SUB DOMAINS
 	{
-		ConOutputDomainsAndSubDomains(results, results->m_nodes[domainIndex].m_children[i], depth + 1, outputRunNotices, outputFailureDesriptions);
+		ConOutputDomainsAndSubDomains(results, results->m_nodes[domainIndex].m_children[i], depth + 1, settings);
 
 		if (results->m_nodes[results->m_nodes[domainIndex].m_children[i]].m_childrenLength > 0 && i != results->m_nodes[domainIndex].m_childrenLength - 1) //spaces out sections in same group
 		{
@@ -424,4 +435,69 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 	}
 }
 
+bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSettings settings)
+{
+	const unsigned int numberBufferLength = 8;
+
+	char fileLocation[] = "..\\UTSext.dat";
+
+	while (settings.m_waitForCollection == true && (std::ifstream(fileLocation).good() == true || std::ifstream(fileLocation).bad() == true)) {}
+
+	std::fstream file = std::fstream();
+	file.open(fileLocation, std::ios::out | std::ios::in | std::ios::trunc);
+
+	if (file.is_open() == false) { return false; }
+
+	file << "{";
+
+	char rootObjectsLengthNumBuffer[numberBufferLength] = {};
+	std::snprintf(rootObjectsLengthNumBuffer, numberBufferLength, "%d", results->m_rootObjectsLength);
+	file << "\"rootObjectsLength\": " << rootObjectsLengthNumBuffer << ",";
+
+	file << "\"nodes\": [";
+
+	for (size_t i = 0; i < results->m_nodesLength; i++)
+	{
+		UTSNode currentNode = results->m_nodes[i];
+		file << "{";
+
+		if (currentNode.m_identifyer != nullptr) { file << "\"identifyer\": \"" << currentNode.m_identifyer << "\","; }
+		else { file << "\"identifyer\": \"\","; }
+
+		if (currentNode.m_runningTestsBellowNotice != nullptr) { file << "\"runningTestsBellowNotice\": \"" << currentNode.m_runningTestsBellowNotice << "\","; }
+		else { file << "\"runningTestsBellowNotice\": \"\","; }
+
+		file << "\"parent\": " << currentNode.m_parent << ",";
+		file << "\"children\": [";
+		for (unsigned int o = 0; o < currentNode.m_childrenLength; o++)
+		{
+			file << currentNode.m_children[o];
+			if (o != currentNode.m_childrenLength - 1) { file << ","; }
+		}
+		file << "],";
+
+		file << "\"testResults\": {";
+
+		char testResultSeverityCodeNumBuffer[numberBufferLength] = {};
+		std::snprintf(testResultSeverityCodeNumBuffer, numberBufferLength, "%d", currentNode.m_testResults.m_testResultSeverityCode);
+		file << "\"testResultSeverityCode\": " << testResultSeverityCodeNumBuffer << ",";
+
+		if (currentNode.m_testResults.m_testResultDescriptionBuffer != nullptr) { file << "\"testResultDescriptionBuffer\": \"" << currentNode.m_testResults.m_testResultDescriptionBuffer << "\","; }
+		else { file << "\"testResultDescriptionBuffer\": \"\","; }
+
+		if (currentNode.m_testResults.m_fileLocation) { file << "\"fileLocation\": \"" << currentNode.m_testResults.m_fileLocation << "\""; }
+		else { file << "\"fileLocation\": \"\""; }
+
+		file << "}";
+		file << "}";
+		if (i != results->m_nodesLength - 1) { file << ","; }
+	}
+
+	file << "]";
+	file << "}";
+
+	file.close();
+
+	return true;
+}
 
