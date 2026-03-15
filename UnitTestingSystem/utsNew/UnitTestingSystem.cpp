@@ -437,11 +437,23 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 
 bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSettings settings)
 {
+	const unsigned int maxCreationDelay = 250;
+	const unsigned int maxCreationAttempts = 8;
 	const unsigned int numberBufferLength = 8;
 
 	char fileLocation[] = "..\\UTSext.dat";
 
-	while (settings.m_waitForCollection == true && (std::ifstream(fileLocation).good() == true || std::ifstream(fileLocation).bad() == true)) {}
+	while (true) //validate file access
+	{
+		if (settings.m_waitForCollection == false) { break; }
+
+		std::ifstream readStream = std::ifstream(fileLocation);
+
+		if (readStream.good() == false) { break; }
+
+		readStream.seekg(0, std::ios::end);
+		if (readStream.tellg() <= 2) { break; }
+	}
 
 	std::fstream file = std::fstream();
 	file.open(fileLocation, std::ios::out | std::ios::in | std::ios::trunc);

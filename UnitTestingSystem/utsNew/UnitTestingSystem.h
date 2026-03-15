@@ -85,9 +85,7 @@ namespace uts
 	/// </summary>
 	class UTSNEW_API UTSTreeConstructor {
 	public:
-		UTSTreeConstructor(UTSTreeConstructor&& other) = default;
-		UTSTreeConstructor& operator=(UTSTreeConstructor&& other) = default;
-
+		UTSTreeConstructor& operator=(const UTSTreeConstructor& t) = delete;
 
 		UTSTreeConstructor(void);
 		UTSTreeConstructor(const char* rootName);
@@ -162,11 +160,10 @@ namespace uts
 	class UTSNEW_API UTSListConstructor
 	{
 	public:
+		UTSListConstructor& operator=(const UTSListConstructor& t) = delete;
+
 		UTSListConstructor(void);
 		~UTSListConstructor(void);
-
-		UTSListConstructor(UTSListConstructor&& other) = default;
-		UTSListConstructor& operator=(UTSListConstructor&& other) = default;
 
 		/// <summary>
 		/// adds a test to the list
