@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+
+    <!--<title>Unit testing system analyzer</title>-->
+
+    <link rel="stylesheet" href="index.css"/>
+	<script src = "contentModifyer.js"></script>
+</head>
+
+<body onresize="SizeCheck()">
+
+<!--windows bar-->
+	<div class="DragBar" style="height: 24px; width: 100vw; position: fixed; top: 0px; padding-top:2px; padding-bottom:2px;">
+		<table style="width:100%; margin: 0; padding: 0; position: relative; top: 0; margin-top:-4px;">
+			<tr>
+				<th style = "width: 50%; margin: 0; padding: 0;">
+					<div style = "float: left;">
+						<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
+					</div>
+				</th>
+				<th style = "width: 50%; margin: 0; padding: 0;">
+					<button onclick='api.ModWindow({close:true})' class = "DragBarButtonCls" style = "height: 24px;"><p class = "dragBarText">✕</p></button>
+					<button onclick='api.ModWindow({max:true})' class = "DragBarButton" style = "height: 24px;"><p class = "dragBarText">❐</p></button>
+					<button onclick='api.ModWindow({min:true})' class = "DragBarButton" style = "height: 24px;"><p class = "dragBarText">⎯</p></button>
+					<!--<button onclick='//SHOW SETTINGS CODE GOSE HERE' class = "DragBarButton" style = "height: 24px; margin-right: 10px"><p class = "dragBarText">⌬</p></button>-->
+				</th>
+			</tr>
+		</table>
+	</div>
+
+
+<!--top bar-->
+	<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
+		<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
+			<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
+	<div class= "TopBarDivider" style="height: 2px; width: 100vw;"></div>
+	
+<!--load in file content-->
+	<script>
+		function LoadChanges()
+		{
+			api.ReadFile({title: "FrontEndSave", type: "json",}).then((result) => {
+				let fileContents = "failed to reach";
+		
+				if(result.success == true)
+				{
+					fileContents = JSON.parse(result.contents);
+				
+					if(fileContents != null)
+					{
+						inapi.eventData = fileContents;
+						console.log({success:true,debugData:[result, fileContents, inapi.eventData]});
+						
+						ReloadMainTimeView();
+						
+						return;
+					}
+				}
+				
+				console.log({success:false,debugData:[result, fileContents]});
+			})
+		}
+	</script>
+
+<!--Funcs: sizing viewports-->
+	<script>
+		function SizeCheck()
+		{
+
+		}
+	</script>
+	
+<!--Funcs: startup procdure/init/onsart-->
+	<script>	
+		SizeCheck();
+		LoadChanges();
+	</script>
+	
+</body>
+</html>
+

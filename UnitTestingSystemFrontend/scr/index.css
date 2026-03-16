@@ -1,0 +1,381 @@
+* 
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+	
+	font-weight: normal;
+	text-align: left;
+    font-family: sans-serif;
+	color: rgba(150, 150, 150, 1);
+	
+	scrollbar-color: rgba(255, 255, 255, 0.25) rgba(0, 0, 0, 0);
+	scrollbar-width: thin;
+}
+*:focus 
+{
+	outline: none;
+}
+
+
+h1 
+{
+    font-family: sans-serif;
+}
+
+body 
+{
+	background-color: rgba(40, 40, 40, 1);
+}
+
+button
+{
+	background-color: rgba(0, 0, 0, 0);
+	border-width: 0px;  
+	position: relative;
+	cursor: pointer;
+}
+
+p
+{
+	font-weight: normal;
+	text-align: left;
+}
+
+select 
+{
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  padding-left: 4px;
+  
+  height: 20px;
+  width: 100%;
+}
+input 
+{
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: white;
+  text-decoration: none;
+  margin: 4px 0px;
+  cursor: pointer;
+  padding-left: 4px;
+  
+  height: 24px;
+}
+textarea 
+{
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: white;
+  text-decoration: none;
+  margin: 4px 0px;
+  cursor: pointer;
+  padding-left: 4px;
+  padding-top: 4px;
+  
+  height: 24px;
+  resize: none;
+}
+
+.dragBarText 
+{
+	color: rgba(240, 240, 240, 1);
+}
+
+.DragBar
+{
+	background-color: rgba(20, 20, 20, 1);
+	-webkit-app-region: drag;
+}
+
+.DragBar-fake
+{
+	background-color: rgba(20, 20, 20, 1);
+}
+
+.WinDrag
+{
+	-webkit-app-region: drag;
+}
+
+.WinNotDrag
+{
+	-webkit-app-region: no-drag;
+}
+
+.DragBarButton:hover
+{
+	background-color: rgba(50, 50, 50, 1);
+}
+.DragBarButton
+{
+	background-color: rgba(50, 50, 50, 0);
+	
+	
+	padding-right: 10px;
+	padding-left: 10px;
+	margin-right: -2px;
+	
+	display: block;
+	float: right;
+	
+	transition: background-color 0.25s;
+	-webkit-app-region: no-drag;
+}
+
+.DragBarButtonCls:hover
+{
+	background-color: rgba(255, 50, 50, 1);
+}
+.DragBarButtonCls
+{
+	background-color: rgba(255, 50, 50, 0);
+	
+	
+	padding-right: 10px;
+	padding-left: 10px;
+	margin-right: -2px;
+	
+	display: block;
+	float: right;
+	
+	transition: background-color 0.25s;
+	-webkit-app-region: no-drag;
+}
+
+.TopBarDivider
+{
+	background-color: rgba(20, 20, 20, 1);
+}
+
+.OverlayBackground
+{
+	background-color: rgba(0, 0, 0, 0.40);
+	backdrop-filter: blur(4px);
+	
+	height: 100%;
+	width: 100%;
+}
+
+.overlayWindow
+{
+	border-style: solid;
+	border-color: rgba(60, 60, 60, 1);
+	border-radius: 6px;
+	border-width: 1px;
+
+	background-color: rgba(40, 40, 40, 1);
+	overflow: hidden;
+}
+
+.DateBox
+{
+	border-style: solid;
+	border-color: rgba(20, 20, 20, 1);
+	border-radius: 6px;
+	border-width: 2px;
+
+	height: 100%;
+	width: 100%;	
+}
+
+.DateBoxIn:hover
+{
+	background-position: 0% 0%;
+	opacity: 100%;
+}
+.DateBoxIn
+{
+	background: radial-gradient(rgba(150,150,150, 1), transparent 16%);
+	background-position: -10% -10%;
+	background-size: 1.5vmin 1.5vmin;
+	
+	opacity: 30%;
+	
+	transition: background-position 0.5s ease, opacity 0.4s ease;
+	
+	height: 100%;
+	width: 100%;	
+}
+
+
+.DateBoxIn_Good:hover
+{
+	background-position: 0% 0%;
+	opacity: 100%;
+}
+.DateBoxIn_Good
+{
+	background: radial-gradient(rgba(0,255,255, 1), transparent 16%);
+	background-position: -10% -10%;
+	background-size: 1.5vmin 1.5vmin;
+	
+	opacity: 50%;
+	
+	transition: background-position 0.5s ease, opacity 0.4s ease;
+	
+	height: 100%;
+	width: 100%;	
+}
+
+
+.DateBoxIn_Bad:hover
+{
+	background-position: 0% 0%;
+	opacity: 100%;
+}
+.DateBoxIn_Bad
+{
+	background: radial-gradient(rgba(255,80,0, 1), transparent 20%);
+	background-position: -10% -10%;
+	background-size: 1.5vmin 1.5vmin;
+	
+	opacity: 60%;
+	
+	transition: background-position 0.5s ease, opacity 0.4s ease;
+	
+	height: 100%;
+	width: 100%;	
+}
+
+
+div.EventsButton
+{
+	float: right;
+
+	width: 20px;
+	height: 20px;
+	
+	position: absolute;
+	top: 2px;
+	left: calc((100%) - (22px));
+	
+	margin: 0;
+}
+
+.EventsButton:hover
+{
+	background-color: rgba(32, 32, 32, 1);
+}
+.EventsButton
+{
+	border-style: solid;
+	border-color: rgba(10, 10, 10, 1);
+	border-radius: 6px;
+	border-width: 1px;
+
+	background-color: rgba(20, 20, 20, 1);
+	overflow: hidden;
+	
+	width: calc((100%) - (8px));
+	height: 26px;
+	
+	margin-bottom: 4px;
+	margin-left: 4px;
+	
+	transition: background-color 0.25s;
+}
+
+.EventsButton_Add:hover
+{
+	background-color: rgba(70, 70, 70, 1);
+}
+.EventsButton_Add
+{
+	border-style: solid;
+	border-color: rgba(20, 20, 20, 1);
+	border-radius: 6px;
+	border-width: 1px;
+
+	background-color: rgba(60, 60, 60, 1);
+	overflow: hidden;
+	
+	width: calc((100%) - (8px));
+	height: 26px;
+	
+	margin-bottom: 4px;
+	margin-left: 4px;
+	
+	transition: background-color 0.25s;
+}
+
+
+.EditButton:hover
+{
+	background-color: rgba(255, 255, 255, 0.2);
+}
+.EditButton
+{
+	background-color: rgba(255, 255, 255, 0.05);
+	border-radius: 6px;
+	
+	padding-right: 4px;
+	padding-left: 4px;
+	
+	padding-top: 2px;
+	padding-bottom: 2px;
+	
+	transition: background-color 0.25s;
+}
+
+.ButtonBasic:hover
+{
+	background-color: rgba(32, 32, 32, 1);
+}
+.ButtonBasic
+{
+	border-style: solid;
+	border-color: rgba(10, 10, 10, 1);
+	border-radius: 6px;
+	border-width: 1px;
+
+	background-color: rgba(20, 20, 20, 1);
+	overflow: hidden;
+	
+	transition: background-color 0.25s;
+}
+
+.ButtonBasic_Bad:hover
+{
+	background-color: rgba(128, 32, 32, 1);
+}
+.ButtonBasic_Bad
+{
+	border-style: solid;
+	border-color: rgba(10, 10, 10, 1);
+	border-radius: 6px;
+	border-width: 1px;
+
+	background-color: rgba(20, 20, 20, 1);
+	overflow: hidden;
+	
+	transition: background-color 0.25s;
+}
+
+.ButtonBasic_Contents
+{
+	border-style: solid;
+	border-color: rgba(0, 0, 0, 0.5);
+	border-radius: 6px;
+	border-width: 2px;
+
+	background-color: rgba(255, 255, 255, 1);
+	overflow: hidden;
+	
+	transition: background-color 0.25s;
+}
+
+.EventsButtonText:hover
+{
+		color: rgba(128, 128, 128, 1);
+}
+.EventsButtonText
+{	
+	color: rgba(128, 128, 128, 1);
+	
+	transition: color 0.25s;
+}
