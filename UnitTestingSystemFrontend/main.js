@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron")
+const { app, dialog, BrowserWindow, ipcMain } = require("electron")
 const { exec } = require("child_process");
 const { debug } = require("console");
 
@@ -131,6 +131,18 @@ function LoadBridges(window)
         {
             window.close();
         }
+    });
+
+// select folder /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ipcMain.handle( 'SelectDirectoryAsset', (req, data) => {
+        const openResults = dialog.showOpenDialogSync(window, {title: data.title, properties: data.properties});
+
+        if(openResults != null)
+        {
+            return {success: true, results: openResults}
+        }
+
+        return {success: false};
     });
 }
 

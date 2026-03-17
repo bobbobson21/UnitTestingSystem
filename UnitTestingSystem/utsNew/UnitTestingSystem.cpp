@@ -441,7 +441,15 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 	const unsigned int maxCreationAttempts = 8;
 	const unsigned int numberBufferLength = 8;
 
-	char fileLocation[] = "..\\UTSext.dat";
+	char normalExportLoccation[] = "..\\UTSext.dat";
+	char inlineExportLoccation[] = "UTSext.dat";
+
+	char* fileLocation = normalExportLoccation;
+
+	if (settings.m_projectIsInline == true)
+	{
+		fileLocation = inlineExportLoccation;
+	}
 
 	while (true) //validate file access
 	{

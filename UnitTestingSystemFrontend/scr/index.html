@@ -12,6 +12,10 @@
 	<script src = "contentModifyer.js"></script>
 </head>
 
+<script>
+	var inapi = {scaningFolder: "", fileData: [], combineNodes: true, showNotices: false}
+</script>
+
 <body onresize="SizeCheck()">
 
 <!--windows bar-->
@@ -35,16 +39,41 @@
 
 
 <!--top bar-->
-	<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
-		<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
-			<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
-	<div class= "TopBarDivider" style="height: 2px; width: 100vw;"></div>
-	
+	<div style="width: 100vw; margin-top:24px; padding-top: 4px; position: fixed; background-color: rgba(0, 0, 0, 0.25);">
+
+		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px; background-color: rgb(20, 20, 20);" name = "button_shownotices" onclick = 'inapi.combineNodes = !inapi.combineNodes; ToggleStyle("button_shownotices", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_shownotices", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_shownotices", "show notices: on", "show notices: off" );'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);" name = "button_text_shownotices">show notices: off<p>
+		</button>
+
+		<button class = "ButtonBasic" style = "height: 24px; width: calc(100% - 152px); background-color: rgb(128, 128, 128);" name = "button_mergeRes" onclick = 'inapi.combineNodes = !inapi.combineNodes; ToggleStyle("button_mergeRes", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_mergeRes", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_mergeRes", "merge results: on", "merge results: off" );'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(20, 20, 20);" name = "button_text_mergeRes">merge results: on<p>
+		</button>
+
+		<div class= "TopBarDivider" style="height: 2px; width: 100vw; margin-top:4px;"></div>
+	</div>
+
 <!--load in file content-->
+	<script>
+		function SelectProjectFolder(starting)
+		{
+			api.SelectDirectoryAsset({title: "select cmake or visual studios project folder", properties: ['openDirectory']}).then((result) => {
+				if(result.success == false && starting == true)
+				{
+					api.ModWindow({close:true})
+				}
+
+				if(result.success == true)
+				{
+					inapi.scaningFolder = result.results[0];
+				}
+			})
+		}
+	</script>
+
 	<script>
 		function LoadChanges()
 		{
-			api.ReadFile({title: "FrontEndSave", type: "json",}).then((result) => {
+			api.ReadFile({path: scaningFoloder, title: "UTSext", type: "dat",}).then((result) => {
 				let fileContents = "failed to reach";
 		
 				if(result.success == true)
@@ -53,17 +82,17 @@
 				
 					if(fileContents != null)
 					{
-						inapi.eventData = fileContents;
-						console.log({success:true,debugData:[result, fileContents, inapi.eventData]});
+						inapi.fileData[inapi.fileData.length] = fileContents;
+
 						
-						ReloadMainTimeView();
+						while(api.CreateFile({path: scaningFoloder, title: "UTSext", type: "dat", contents: ""}).success == false) {}
 						
 						return;
 					}
 				}
-				
-				console.log({success:false,debugData:[result, fileContents]});
 			})
+
+			requestAnimationFrame(LoadChanges);
 		}
 	</script>
 
@@ -78,9 +107,9 @@
 <!--Funcs: startup procdure/init/onsart-->
 	<script>	
 		SizeCheck();
-		LoadChanges();
+		SelectProjectFolder(true);
+		while(true) {LoadChanges(); }
 	</script>
-	
 </body>
 </html>
 

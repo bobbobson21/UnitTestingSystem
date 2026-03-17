@@ -216,6 +216,7 @@ namespace uts
 	{
 	public:
 		bool m_waitForCollection = true; ///if there are alread outputed results wait for them to be collected first
+		bool m_projectIsInline = false; ///if true the issue dump will not be exporte to the parent folder of the create file location isted it will only exsit in the create file location
 	};
 
 

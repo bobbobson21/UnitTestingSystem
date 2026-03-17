@@ -126,6 +126,24 @@ function ToggleText( id, textA, textB )
 	}
 }
 
+function ToggleStyle( id, key, valueOn, valueOff )
+{
+	var elements = document.getElementsByName(id);
+	for(var i = 0; i < elements.length; i++) 
+	{
+		//console.log([elements[i].style[key], valueOff])
+
+		if(elements[i].style[key] == valueOn)
+		{
+			elements[i].style[key] = valueOff;
+		}
+		else
+		{
+			elements[i].style[key] = valueOn;
+		}
+	}
+}
+
 function ForceText( id, state, textA, textB )
 {
 	var elements = document.getElementsByName(id);
