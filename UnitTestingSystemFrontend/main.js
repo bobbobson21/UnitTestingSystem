@@ -4,6 +4,7 @@ const { debug } = require("console");
 
 const path = require("path");
 const fs = require("fs");
+const { debuglog } = require("util");
 
 function LoadBridges(window)
 {
@@ -11,30 +12,29 @@ function LoadBridges(window)
     ipcMain.handle('CreateFile', (req, data) => {
         if(!data || !data.title || !data.type || !data.contents) {return {success: false};}
         
-        var filePath = __dirname;
+        var filePath = "";
 
-        if(data.path != null)
+        if(data.fromRootPath == null)
         {
-            filePath = data.path;
+            filePath = __dirname;
+        }
+        else
+        {
+            filePath = data.fromRootPath;
         }
 
         if(data.addedPath != null)
         {
-            filePath  = filePath + "/" + addedPath;
+            filePath = filePath + "\\" + addedPath;
         }
 
-        filePath = filePath + "/" + data.title + "." + data.type;
+        var filePath = filePath + "\\" + data.title + "." + data.type;
         var completedWithNoErrors = true;
 
         fs.writeFileSync(filePath, data.contents, (err)=>{
             if(err)
             {
-                console.error("failed to write to file at: " + filePath);
                 completedWithNoErrors = false;
-            }
-            else
-            {
-                console.log("file write successfully at:" + filePath);
             }
         });
 
@@ -45,67 +45,33 @@ function LoadBridges(window)
     ipcMain.handle('ReadFile', (req, data) => {
         if(!data || !data.title || !data.type) {return {success: false};}
         
-        var filePath = __dirname;
+        var filePath = "";
 
-        if(data.path != null)
+        if(data.fromRootPath == null)
         {
-            filePath = data.path;
+            filePath = __dirname;
+        }
+        else
+        {
+            filePath = data.fromRootPath;
         }
 
         if(data.addedPath != null)
         {
-            filePath  = filePath + "/" + addedPath;
+            filePath = filePath + "\\" + addedPath;
         }
 
-        filePath = filePath + "/" + data.title + "." + data.type;
-        let completedWithNoErrors = true;
+        var filePath = filePath + "\\" + data.title + "." + data.type;
+        var completedWithNoErrors = true;
 
         const fileContent = fs.readFileSync(filePath, {encoding:"utf8", flag: "r"}, (err, data) => {
             if(err)
             {
-                console.error("failed to read file at: " + filePath);
-                 completedWithNoErrors = false;
-            }
-            else
-            {
-                console.log("file read successfully at:" + filePath);
+                completedWithNoErrors = false;
             }
         });
 
         return {success: completedWithNoErrors, path: filePath, contents: fileContent };
-    });
-
-// delete file (stub) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ipcMain.handle('DeleteFile', (req, data) => {
-        if(!data || !data.title || !data.type) {return {success: false};}
-        var filePath = __dirname;
-
-        if(data.path != null)
-        {
-            filePath = data.path;
-        }
-
-        if(data.addedPath != null)
-        {
-            filePath = filePath + "/" + addedPath;
-        }
-
-        filePath = filePath + "/" + data.title + "." + data.type;
-        var completedWithNoErrors = true;
-
-        fs.unlinkSync(filePath, (err) => {
-            if(err)
-            {
-                console.error("failed to delete file at: " + filePath);
-                 completedWithNoErrors = false;
-            }
-            else
-            {
-                console.log("file deleted successfully at:" + filePath);
-            }
-        })
-
-        return {success: completedWithNoErrors};
     });
 
 // mod window /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

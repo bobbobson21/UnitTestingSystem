@@ -37,20 +37,101 @@
 		</table>
 	</div>
 
-
 <!--top bar-->
-	<div style="width: 100vw; margin-top:24px; padding-top: 4px; position: fixed; background-color: rgba(0, 0, 0, 0.25);">
+	<div style="width: 100vw; margin-top:24px; padding-top: 4px; position: fixed; top: 0; background-color: rgba(0, 0, 0, 0.25);">
 
-		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px; background-color: rgb(20, 20, 20);" name = "button_shownotices" onclick = 'inapi.combineNodes = !inapi.combineNodes; ToggleStyle("button_shownotices", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_shownotices", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_shownotices", "show notices: on", "show notices: off" );'>
+		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px; background-color: rgb(20, 20, 20);" name = "button_shownotices" onclick = 'inapi.showNotices = !inapi.showNotices; RebuildDisplay(inapi.combineNodes, inapi.showNotices); ToggleStyle("button_shownotices", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_shownotices", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_shownotices", "show notices: on", "show notices: off" );'>
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);" name = "button_text_shownotices">show notices: off<p>
 		</button>
 
-		<button class = "ButtonBasic" style = "height: 24px; width: calc(100% - 152px); background-color: rgb(128, 128, 128);" name = "button_mergeRes" onclick = 'inapi.combineNodes = !inapi.combineNodes; ToggleStyle("button_mergeRes", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_mergeRes", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_mergeRes", "merge results: on", "merge results: off" );'>
+		<button class = "ButtonBasic" style = "height: 24px; width: calc(100% - 152px); background-color: rgb(128, 128, 128);" name = "button_mergeRes" onclick = 'inapi.combineNodes = !inapi.combineNodes; RebuildDisplay(inapi.combineNodes, inapi.showNotices); ToggleStyle("button_mergeRes", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_mergeRes", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_mergeRes", "merge results: on", "merge results: off" );'>
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(20, 20, 20);" name = "button_text_mergeRes">merge results: on<p>
 		</button>
 
-		<div class= "TopBarDivider" style="height: 2px; width: 100vw; margin-top:4px;"></div>
+		<div class= "TopBarDivider" style="height: 2px; width: 100%; margin-top:4px;"></div>
 	</div>
+
+<!--contents section-->
+	<div style="width: 96vw; height: calc(100vh - 60px); position: relative; top: 56px; left: 2vw; margin-top:4px; padding-top: 4px;  overflow: scroll;" name = "viewContents">
+	</div>
+
+	<script>
+		function ClearDisplay()
+		{
+			var elementName = "viewContents";
+			var element = document.getElementsByName(elementName)[0];
+
+			while (element.firstChild)
+			{
+				element.removeChild(element.firstChild);
+			}
+		}
+
+		function CreateIssuesAndSubIssues(data, parentName, showNotices, groupName, index)
+		{
+			var element = document.getElementsByName(parentName)[0];
+			var us = data[index];
+			var canAddBool = true;
+
+			for (let index = 0; index < element.children.length; index++) 
+			{
+				if(element.children[index].elementName == groupName + "_" + us.identifyer)
+				{
+					var severityLevel = Number(element.id);
+
+					if(severityLevel < us.testResults.testResultSeverityCode)
+					{
+						element.id = us.testResults.testResultSeverityCode;
+						element.getElementsByName("ColorCodeBasic")[0].className = "ColorCodeBasic_root ColorCodeBasic_"+ us.testResults.testResultSeverityCode.toString();
+					}
+
+					canAddBool = false;
+					break;
+				}
+			}
+			
+			if(canAddBool == true && (us.runningTestsBellowNotice == "" || showNotices == true))
+			{
+				var details = '<br><p>' + us.testResults.testResultDescriptionBuffer + '</p>'
+				if(us.testResults.testResultDescriptionBuffer == "") {details}
+
+				var colorCode = '<div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_' + us.testResults.testResultSeverityCode.toString() + '"></div>'
+
+				var body = '<div class = "DivBasics" id = "'+ us.testResults.testResultSeverityCode +'" name = "' + groupName + "_" + us.identifyer + '">' + colorCode + '<h1>'+ us.identifyer +'</h1>' + details + '</div>'
+				if(us.identifyer == "") { body = '<div class = "DivBasics", name = "' + groupName + "_" + us.runningTestsBellowNotice + '"><div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_notice"></div><h2>'+ us.runningTestsBellowNotice +'</h2></div>' }
+
+				element.insertAdjacentHTML("beforeend", body);
+			}
+
+			for (let index = 0; index < us.children.length; index++)
+			{
+				CreateIssuesAndSubIssues(data, groupName + "_" + us.identifyer, showNotices, groupName, us.children[index]);
+			}
+
+		}
+
+		function RebuildDisplay(mergeResults, showNotices)
+		{
+			var elementName = "viewContents";
+
+			ClearDisplay();
+			
+			for (let index = 0; index < inapi.fileData.length; index++)
+			{
+				var groupName = "";
+
+				if(mergeResults == false)
+				{
+					groupName = index.toString();
+				}
+
+				for (let nodeIndex = 0; nodeIndex < inapi.fileData[index].rootObjectsLength; nodeIndex++)
+				{
+					CreateIssuesAndSubIssues(inapi.fileData[index].nodes, elementName, showNotices, groupName, index)
+				}
+			}
+		}
+	</script>
 
 <!--load in file content-->
 	<script>
@@ -73,7 +154,8 @@
 	<script>
 		function LoadChanges()
 		{
-			api.ReadFile({path: scaningFoloder, title: "UTSext", type: "dat",}).then((result) => {
+			const folderPath = inapi.scaningFolder;
+			api.ReadFile({fromRootPath: folderPath, title: "UTSext", type: "dat",}).then((result) => {
 				let fileContents = "failed to reach";
 		
 				if(result.success == true)
@@ -83,11 +165,9 @@
 					if(fileContents != null)
 					{
 						inapi.fileData[inapi.fileData.length] = fileContents;
-
+						RebuildDisplay(inapi.combineNodes, inapi.showNotices)
 						
-						while(api.CreateFile({path: scaningFoloder, title: "UTSext", type: "dat", contents: ""}).success == false) {}
-						
-						return;
+						api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
 					}
 				}
 			})
@@ -108,7 +188,7 @@
 	<script>	
 		SizeCheck();
 		SelectProjectFolder(true);
-		while(true) {LoadChanges(); }
+		LoadChanges();
 	</script>
 </body>
 </html>

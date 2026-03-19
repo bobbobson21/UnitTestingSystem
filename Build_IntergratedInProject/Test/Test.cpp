@@ -17,7 +17,7 @@ uts::UTSUnitTestResults ExampleTest(void* inArgs)
 uts::UTSUnitTestResults ExampleTestB(void* inArgs)
 {
 	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCFail;
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCTryCatchFail;
 	returnData.m_testResultDescriptionBuffer = new char[8] {"you gay"};
 
 	return returnData;
@@ -69,7 +69,7 @@ int main()
 
 	mainTestTree.RunTests(nullptr);
 	uts::ConOutputTestResults(mainTestTree.GetContainer(), uts::ConOutputSettings{true, true});
-	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});
+	//uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});
 
 	/*uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
 

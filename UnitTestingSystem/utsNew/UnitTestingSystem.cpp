@@ -484,7 +484,7 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 		if (currentNode.m_identifyer != nullptr) { file << "\"identifyer\": \"" << currentNode.m_identifyer << "\","; }
 		else { file << "\"identifyer\": \"\","; }
 
-		if (currentNode.m_runningTestsBellowNotice != nullptr) { file << "\"runningTestsBellowNotice\": \"" << currentNode.m_runningTestsBellowNotice << "\","; }
+		if (currentNode.m_runningTestsBellowNotice != nullptr) { file << "\"runningTestsBellowNotice\": \"notice: " << currentNode.m_runningTestsBellowNotice << "\","; }
 		else { file << "\"runningTestsBellowNotice\": \"\","; }
 
 		file << "\"parent\": " << currentNode.m_parent << ",";
