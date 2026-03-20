@@ -119,8 +119,8 @@ function createWindow()
         height: 800,
         minWidth: 900,
         minHeight: 600,
-        //frame: false, //commnet this to bring back old window
-        //autoHideMenuBar: true, //commnet this to bring back old window
+        frame: false, //commnet this to bring back old window
+        autoHideMenuBar: true, //commnet this to bring back old window
         webPreferences:{
             preload: path.join(__dirname, "preload.js")
         }

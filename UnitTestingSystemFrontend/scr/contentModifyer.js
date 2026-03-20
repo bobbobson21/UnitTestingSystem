@@ -74,6 +74,50 @@ function SwitchContentStyle( name, min, max, index, key, valueOn, valueOff )
 	}
 }
 
+function HideChildren( node, lowerBounds, upperBounds ) 
+{
+	for(var i = 0; i < node.children.length; i++) 
+	{
+		if((lowerBounds == undefined || i >= lowerBounds) && (upperBounds == undefined || i <= upperBounds))
+		{
+			node.children[i].style.display = "none";
+			node.children[i].style.visibility = "hidden";
+		}
+	}
+}
+
+function ShowChildren( node, lowerBounds, upperBounds ) 
+{
+	for(var i = 0; i < node.children.length; i++) 
+	{
+		if((lowerBounds == undefined || i >= lowerBounds) && (upperBounds == undefined || i <= upperBounds))
+		{
+			node.children[i].style.display = "block";
+			node.children[i].style.visibility = "visible";
+		}
+	}
+}
+
+function ToggleChildren( node, lowerBounds, upperBounds ) 
+{
+	for(var i = 0; i < node.children.length; i++) 
+	{
+		if((lowerBounds == undefined || i >= lowerBounds) && (upperBounds == undefined || i <= upperBounds))
+		{
+			if(node.children[i].style.visibility == "hidden")
+			{
+				node.children[i].style.display = "block";
+				node.children[i].style.visibility = "visible";
+			}
+			else
+			{
+				node.children[i].style.display = "none";
+				node.children[i].style.visibility = "hidden";
+			}
+		}
+	}
+}
+
 function HideContent( hide ) 
 {
 	var elements = document.getElementsByName(hide);

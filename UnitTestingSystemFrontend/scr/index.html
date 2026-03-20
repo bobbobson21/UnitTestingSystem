@@ -90,13 +90,20 @@
 			
 			if(canAddBool == true && (us.runningTestsBellowNotice == "" || showNotices == true))
 			{
+				var childrenExceptionCount = 0;
 				var details = '<br><p>' + us.testResults.testResultDescriptionBuffer + '</p>'
-				if(us.testResults.testResultDescriptionBuffer == "") {details}
+				if(us.testResults.testResultDescriptionBuffer == "") {details = ""} else { childrenExceptionCount = childrenExceptionCount +1; }
 
 				var colorCode = '<div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_' + us.testResults.testResultSeverityCode.toString() + '"></div>'
 
-				var body = '<div class = "DivBasics" id = "'+ us.testResults.testResultSeverityCode +'" name = "' + groupName + "_" + us.identifyer + '">' + colorCode + '<h1>'+ us.identifyer +'</h1>' + details + '</div>'
+
+				var toggleContent = '<button onclick = \"ToggleChildren( document.getElementsByName(\'' + groupName + "_" + us.identifyer + '\')[0], '+ (3 + childrenExceptionCount).toString() +' ); ToggleText(\'ddb_'+ groupName + "_" + us.identifyer+'\', \'hide children ▼\', \'show children ▲\');\"><p name = "ddb_'+ groupName + "_" + us.identifyer+'">hide children ▼</p></button>'
+				if(us.children.length == 0) {toggleContent = ""}
+
+				var body = '<div class = "DivBasics" id = "'+ us.testResults.testResultSeverityCode +'" name = "' + groupName + "_" + us.identifyer + '">' + colorCode + '<h1>'+ us.identifyer +'</h1>' + details + toggleContent + '</div>'
 				if(us.identifyer == "") { body = '<div class = "DivBasics", name = "' + groupName + "_" + us.runningTestsBellowNotice + '"><div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_notice"></div><h2>'+ us.runningTestsBellowNotice +'</h2></div>' }
+
+
 
 				element.insertAdjacentHTML("beforeend", body);
 			}
