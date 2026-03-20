@@ -35,7 +35,12 @@ namespace uts
 	public:
 		UTSUnitTestSeverityCode m_testResultSeverityCode = UTSUnitTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted
 		char* m_testResultDescriptionBuffer = nullptr; ///a description of the reason why the test failed
-		char* m_fileLocation = nullptr;
+		
+		char* m_unitTestFileLocationFromRoot = nullptr; ///the location of the test
+		char* m_unitTestfileLocationRelative = nullptr; ///the location of the test (takes priority)
+		
+		char* m_objectFileLocationFromRoot = nullptr; ///the location of the class object
+		char* m_objectFileLocationRelative = nullptr; ///the location of the class object (takes priority)
 
 		void free(void);
 	};

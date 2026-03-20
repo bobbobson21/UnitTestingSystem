@@ -10,7 +10,7 @@ function LoadBridges(window)
 {
 // create file /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ipcMain.handle('CreateFile', (req, data) => {
-        if(!data || !data.title || !data.type || !data.contents) {return {success: false};}
+        if(data === undefined || data.title === undefined || data.type === undefined || data.contents === undefined) {return {success: false};}
         
         var filePath = "";
 
@@ -25,7 +25,7 @@ function LoadBridges(window)
 
         if(data.addedPath != null)
         {
-            filePath = filePath + "\\" + addedPath;
+            filePath = filePath + "\\" + data.addedPath;
         }
 
         var filePath = filePath + "\\" + data.title + "." + data.type;
@@ -43,7 +43,7 @@ function LoadBridges(window)
 
 // read file //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ipcMain.handle('ReadFile', (req, data) => {
-        if(!data || !data.title || !data.type) {return {success: false};}
+        if(data === undefined || data.title === undefined || data.type === undefined) {return {success: false};}
         
         var filePath = "";
 

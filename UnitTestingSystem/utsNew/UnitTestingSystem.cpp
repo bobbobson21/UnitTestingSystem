@@ -9,7 +9,12 @@
 void uts::UTSUnitTestResults::free(void)
 {
 	delete[] m_testResultDescriptionBuffer;
-	delete[] m_fileLocation;
+
+	delete[] m_unitTestFileLocationFromRoot;
+	delete[] m_unitTestfileLocationRelative;
+	
+	delete[] m_objectFileLocationFromRoot;
+	delete[] m_objectFileLocationRelative;
 }
 
 void uts::UTSNode::free(void)
@@ -61,7 +66,7 @@ void uts::UTSDataContainer::AddNode(UTSNode node, unsigned int parentIndex)
 
 		if (m_nodes[parentIndex].m_children != nullptr)
 		{
-			memcpy(parentChildrenBuffer, m_nodes[parentIndex].m_children, sizeof(unsigned int) * m_nodes[parentIndex].m_childrenLength);
+			memcpy(parentChildrenBuffer, m_nodes[parentIndex].m_children, sizeof(int) * m_nodes[parentIndex].m_childrenLength);
 			delete[] m_nodes[parentIndex].m_children;
 		}
 
@@ -505,8 +510,19 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 		if (currentNode.m_testResults.m_testResultDescriptionBuffer != nullptr) { file << "\"testResultDescriptionBuffer\": \"" << currentNode.m_testResults.m_testResultDescriptionBuffer << "\","; }
 		else { file << "\"testResultDescriptionBuffer\": \"\","; }
 
-		if (currentNode.m_testResults.m_fileLocation) { file << "\"fileLocation\": \"" << currentNode.m_testResults.m_fileLocation << "\""; }
-		else { file << "\"fileLocation\": \"\""; }
+		if (currentNode.m_testResults.m_objectFileLocationFromRoot != nullptr) { file << "\"objectFileLocation\": \"" << currentNode.m_testResults.m_objectFileLocationFromRoot << "\","; }
+		else if (currentNode.m_testResults.m_objectFileLocationRelative != nullptr) { file << "\"objectFileLocation\": \"" << currentNode.m_testResults.m_objectFileLocationRelative << "\","; }
+		else { file << "\"objectFileLocation\": \"\","; }
+
+		if (currentNode.m_testResults.m_objectFileLocationFromRoot != nullptr) { file << "\"isObjectFileLocationFromRoot\": true,"; }
+		else { file << "\"isObjectFileLocationFromRoot\": false,"; }
+
+		if (currentNode.m_testResults.m_unitTestFileLocationFromRoot != nullptr) { file << "\"unitTestFileLocation\": \"" << currentNode.m_testResults.m_unitTestFileLocationFromRoot << "\","; }
+		else if (currentNode.m_testResults.m_unitTestFileLocationFromRoot != nullptr) { file << "\"unitTestFileLocation\": \"" << currentNode.m_testResults.m_unitTestFileLocationFromRoot << "\","; }
+		else { file << "\"unitTestFileLocation\": \"\","; }
+
+		if (currentNode.m_testResults.m_unitTestFileLocationFromRoot != nullptr) { file << "\"isUnitTestFileLocationFromRoot\": true"; }
+		else { file << "\"isUnitTestFileLocationFromRoot\": false"; }
 
 		file << "}";
 		file << "}";

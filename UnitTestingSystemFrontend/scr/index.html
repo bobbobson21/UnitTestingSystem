@@ -75,14 +75,12 @@
 
 			for (let index = 0; index < element.children.length; index++) 
 			{
-				if(element.children[index].elementName == groupName + "_" + us.identifyer)
+				if(element.children[index].getAttribute("name") == groupName + "_" + us.identifyer || element.children[index].getAttribute("name") == groupName + "_" + us.runningTestsBellowNotice)
 				{
-					var severityLevel = Number(element.id);
-
-					if(severityLevel < us.testResults.testResultSeverityCode)
+					if(Number(element.children[index].id) < us.testResults.testResultSeverityCode)
 					{
-						element.id = us.testResults.testResultSeverityCode;
-						element.getElementsByName("ColorCodeBasic")[0].className = "ColorCodeBasic_root ColorCodeBasic_"+ us.testResults.testResultSeverityCode.toString();
+						element.children[index].id = us.testResults.testResultSeverityCode.toString();
+						element.children[index].children[0].className = "ColorCodeBasic_root ColorCodeBasic_"+ us.testResults.testResultSeverityCode.toString();	
 					}
 
 					canAddBool = false;
@@ -127,7 +125,7 @@
 
 				for (let nodeIndex = 0; nodeIndex < inapi.fileData[index].rootObjectsLength; nodeIndex++)
 				{
-					CreateIssuesAndSubIssues(inapi.fileData[index].nodes, elementName, showNotices, groupName, index)
+					CreateIssuesAndSubIssues(inapi.fileData[index].nodes, elementName, showNotices, groupName, 0)
 				}
 			}
 		}
@@ -160,19 +158,54 @@
 		
 				if(result.success == true)
 				{
-					fileContents = JSON.parse(result.contents);
-				
-					if(fileContents != null)
+					try
 					{
-						inapi.fileData[inapi.fileData.length] = fileContents;
-						RebuildDisplay(inapi.combineNodes, inapi.showNotices)
-						
-						api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
+						fileContents = JSON.parse(result.contents);
+					
+						if(fileContents != null)
+						{
+							inapi.fileData[inapi.fileData.length] = fileContents;
+							RebuildDisplay(inapi.combineNodes, inapi.showNotices)
+							
+							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""}).then((result) => {while(true){if(result.success == true) {break}}})
+						}
+					}
+					catch
+					{
+
 					}
 				}
 			})
+		}
+	</script>
 
-			requestAnimationFrame(LoadChanges);
+<!--Funcs: update func-->
+	<script>
+		var firstFrameTimePoint = 0;
+		var maxExacutionDelay = 1;
+		var currentExacutionDelay = 0;
+
+		function Update(timeStamp)
+		{
+			requestAnimationFrame(Update);
+
+
+			var time = 0;
+			if(	firstFrameTimePoint == undefined && timeStamp != undefined)
+			{
+				firstFrameTimePoint = timeStamp;
+			}
+	
+			if(timeStamp != undefined)
+			{
+				time = timeStamp - firstFrameTimePoint;
+			}
+			
+			if(currentExacutionDelay < time)
+			{
+				currentExacutionDelay = time + maxExacutionDelay;
+				LoadChanges();
+			}
 		}
 	</script>
 
@@ -188,7 +221,7 @@
 	<script>	
 		SizeCheck();
 		SelectProjectFolder(true);
-		LoadChanges();
+		Update();
 	</script>
 </body>
 </html>
