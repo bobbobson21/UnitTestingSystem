@@ -44,11 +44,15 @@
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);" name = "button_text_shownotices">show notices: off<p>
 		</button>
 
+		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px;" name = "button_clearResults" onclick = 'inapi.fileData = []; RebuildDisplay(inapi.combineNodes, inapi.showNotices);'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center;" name = "button_text_clearResults">clear results<p>
+		</button>
+
 		<button class = "ButtonBasic" style = "height: 24px; width: 140px; background-color: rgb(128, 128, 128);" name = "button_mergeRes" onclick = 'inapi.combineNodes = !inapi.combineNodes; RebuildDisplay(inapi.combineNodes, inapi.showNotices); ToggleStyle("button_mergeRes", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_mergeRes", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_mergeRes", "merge results: on", "merge results: off" );'>
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(20, 20, 20);" name = "button_text_mergeRes">merge results: on<p>
 		</button>
 
-		<button class = "ButtonBasic" style = "width: calc(100% - 300px); height: 24px; background-color: rgb(128, 128, 128);" name = "button_isScaning" onclick = 'inapi.isScaning = !inapi.isScaning; ToggleStyle("button_isScaning", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_isScaning", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_isScaning", "is scaning: on", "is scaning: off" );'>
+		<button class = "ButtonBasic" style = "width: calc(100% - 448px); height: 24px; background-color: rgb(128, 128, 128);" name = "button_isScaning" onclick = 'inapi.isScaning = !inapi.isScaning; ToggleStyle("button_isScaning", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_isScaning", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_isScaning", "is scaning: on", "is scaning: off" );'>
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(20, 20, 20);" name = "button_text_isScaning">is scaning: on<p>
 		</button>
 

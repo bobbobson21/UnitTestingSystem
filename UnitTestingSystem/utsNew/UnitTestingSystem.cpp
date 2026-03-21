@@ -59,7 +59,6 @@ void uts::UTSDataContainer::AddNode(UTSNode node, unsigned int parentIndex)
 
 
 	//adds child to parent
-
 	if (m_nodesLength - 1 != parentIndex)
 	{
 		unsigned int* parentChildrenBuffer = new unsigned int[m_nodes[parentIndex].m_childrenLength + 1];
@@ -315,7 +314,7 @@ void uts::UTSListConstructor::RunTests(void* args)
 {
 	for (unsigned int i = 0; i < m_listMain->m_nodesLength; i++)
 	{
-		if (m_listMain->m_nodes[i].m_runningTestsBellowNotice != nullptr)
+		if (m_listMain->m_nodes[i].m_runningTestsBellowNotice != nullptr) //output notices
 		{
 			std::cout << "\033[0;96;49m" << "Unit Test System is running: " << "\033[0m" << m_listMain->m_nodes[i].m_runningTestsBellowNotice << "\n";
 		}
@@ -345,7 +344,7 @@ void uts::ConOutputTestResults(const UTSDataContainer* results, ConOutputSetting
 
 	for (unsigned int indexOfRootNode = 0; indexOfRootNode < results->m_rootObjectsLength; indexOfRootNode++)
 	{
-		ConOutputDomainsAndSubDomains(results, indexOfRootNode, startingDepth, settings); //start with root and depth 0
+		ConOutputDomainsAndSubDomains(results, indexOfRootNode, startingDepth, settings); //more than one root is used in lists but other than that it is just one element most of the time
 	}
 
 	std::cout << "\033[0;96;49m" << "\n";
@@ -456,7 +455,7 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 		fileLocation = inlineExportLoccation;
 	}
 
-	while (true) //validate file access
+	while (true) //should access file
 	{
 		if (settings.m_waitForCollection == false) { break; }
 
@@ -471,7 +470,7 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 	std::fstream file = std::fstream();
 	file.open(fileLocation, std::ios::out | std::ios::in | std::ios::trunc);
 
-	if (file.is_open() == false) { return false; }
+	if (file.is_open() == false) { return false; } //something wrong
 
 	file << "{";
 
