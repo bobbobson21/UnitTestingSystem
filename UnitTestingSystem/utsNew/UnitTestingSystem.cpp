@@ -518,7 +518,7 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 		else { file << "\"isObjectFileLocationFromRoot\": false,"; }
 
 		if (currentNode.m_testResults.m_unitTestFileLocationFromRoot != nullptr) { file << "\"unitTestFileLocation\": \"" << currentNode.m_testResults.m_unitTestFileLocationFromRoot << "\","; }
-		else if (currentNode.m_testResults.m_unitTestFileLocationFromRoot != nullptr) { file << "\"unitTestFileLocation\": \"" << currentNode.m_testResults.m_unitTestFileLocationFromRoot << "\","; }
+		else if (currentNode.m_testResults.m_unitTestfileLocationRelative != nullptr) { file << "\"unitTestFileLocation\": \"" << currentNode.m_testResults.m_unitTestfileLocationRelative << "\","; }
 		else { file << "\"unitTestFileLocation\": \"\","; }
 
 		if (currentNode.m_testResults.m_unitTestFileLocationFromRoot != nullptr) { file << "\"isUnitTestFileLocationFromRoot\": true"; }

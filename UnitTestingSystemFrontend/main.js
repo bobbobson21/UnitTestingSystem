@@ -6,6 +6,8 @@ const path = require("path");
 const fs = require("fs");
 const { debuglog } = require("util");
 
+//const exec = require('child_process').exec;
+
 function LoadBridges(window)
 {
 // create file /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +111,19 @@ function LoadBridges(window)
         }
 
         return {success: false};
+    });
+
+// open in code /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ipcMain.handle( 'OpenFileInCode', (req, data) => {
+        if(data === undefined || data.filePath === undefined) {return {success: false};}
+
+        if(fs.existsSync(data.filePath) == true)
+        {
+            exec( 'code "' +  data.filePath + '"' )
+            return {success: true, path: data.filePath };
+        }
+
+        return {success: false, path: data.filePath };
     });
 }
 
