@@ -182,6 +182,8 @@
 	</script>
 
 	<script>
+		var lastResultFromLoadChangesAsString = ""
+
 		function LoadChanges()
 		{
 			const folderPath = inapi.scaningFolder;
@@ -192,14 +194,21 @@
 				{
 					try
 					{
+						if(result.contents == lastResultFromLoadChangesAsString)
+						{
+							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
+							return;
+						}
+
 						fileContents = JSON.parse(result.contents);
 					
 						if(fileContents != null)
 						{
+							lastResultFromLoadChangesAsString = result.contents;
 							inapi.fileData[inapi.fileData.length] = fileContents;
 							RebuildDisplay(inapi.combineNodes, inapi.showNotices)
 							
-							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""}).then((result) => {while(true){if(result.success == true) {break}}})
+							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
 						}
 					}
 					catch
