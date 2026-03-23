@@ -34,14 +34,15 @@ namespace uts
 	{
 	public:
 		UTSUnitTestSeverityCode m_testResultSeverityCode = UTSUnitTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted.
-		char* m_testResultDescriptionBuffer = nullptr; ///A description of the reason why the test failed.
+		char* m_testResultDescriptionBuffer = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
 		
-		char* m_unitTestFileLocationFromRoot = nullptr; ///The location of the test as an array pointer and this can be greater than UTSNEW__MAX_STRING_BUFFER_SIZE if needed.
-		char* m_unitTestfileLocationRelative = nullptr; ///The location of the test as an array pointer and this can be greater than UTSNEW__MAX_STRING_BUFFER_SIZE if needed.
+		char* m_unitTestFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
+		char* m_unitTestfileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
 		
-		char* m_objectFileLocationFromRoot = nullptr; ///The location of the class object as an array pointer and this can be greater than UTSNEW__MAX_STRING_BUFFER_SIZE if needed.
-		char* m_objectFileLocationRelative = nullptr; ///The location of the class object as an array pointer and this can be greater than UTSNEW__MAX_STRING_BUFFER_SIZE if needed.
+		char* m_objectFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY,  ACCESS THOUGTH WriteStringSafe
+		char* m_objectFileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
 
+		void WriteStringSafe(char** writeTo, const char* stringToWrite);
 		void free(void);
 	};
 

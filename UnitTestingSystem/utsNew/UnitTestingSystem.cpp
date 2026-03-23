@@ -2,9 +2,14 @@
 //
 
 #include "pch.h"
-#include "framework.h"
 
 #include "UnitTestingSystem.h"
+
+void uts::UTSUnitTestResults::WriteStringSafe(char** writeTo, const char* stringToWrite)
+{
+	(*writeTo) = new char[strnlen(stringToWrite, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+}
 
 void uts::UTSUnitTestResults::free(void)
 {
@@ -19,12 +24,12 @@ void uts::UTSUnitTestResults::free(void)
 
 void uts::UTSNode::free(void)
 {
+	m_testResults.free();
+
 	delete[] m_children;
 	delete[] m_runningTestsBellowNotice;
 	delete[] m_identifyer;
 	m_childrenLength = 0;
-
-	m_testResults.free();
 }
 
 

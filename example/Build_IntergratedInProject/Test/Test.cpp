@@ -18,9 +18,10 @@ uts::UTSUnitTestResults ExampleTestB(void* inArgs)
 {
 	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
 	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
-	returnData.m_testResultDescriptionBuffer = new char[8] {"you gay"};
-	returnData.m_objectFileLocationRelative = new char[15] {"Test\\\\Test.cpp"};
-	returnData.m_unitTestfileLocationRelative = new char[15] {"Test\\\\Test.cpp"};
+
+	returnData.WriteStringSafe(&returnData.m_testResultDescriptionBuffer, "you gay");
+	returnData.WriteStringSafe(&returnData.m_objectFileLocationRelative, "Test\\\\Test.cpp");
+	returnData.WriteStringSafe(&returnData.m_unitTestfileLocationRelative, "Test\\\\Test.cpp");
 
 	return returnData;
 }
