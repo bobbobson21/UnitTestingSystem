@@ -44,7 +44,7 @@ uts::UTSUnitTestResults ExampleTestD(void* inArgs)
 
 int main()
 {
-	/*uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
+	uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
 
 	mainTestTree.PushDomain("namespace", "testing");
 	mainTestTree.PushDomain("class", "tester");
@@ -72,26 +72,26 @@ int main()
 
 	mainTestTree.RunTests(nullptr);
 	uts::ConOutputTestResults(mainTestTree.GetContainer(), uts::ConOutputSettings{true, true});
-	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});*/
+	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});
 
-	uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
+	/*uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
 
 	mainTestList.AddTest("ExampleTest", ExampleTest);
 	mainTestList.AddTest("ExampleTestB", ExampleTestB);
 	mainTestList.AddNotice("running C block");
 	mainTestList.AddTest("ExampleTestC", ExampleTestC);
-	mainTestList.AddTest("ExampleTestC", ExampleTestC);
-	mainTestList.AddTest("ExampleTestC", ExampleTestC);
-	mainTestList.AddTest("ExampleTestC", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC (1)", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC (2)", ExampleTestC);
+	mainTestList.AddTest("ExampleTestC (3)", ExampleTestC);
 	mainTestList.AddNotice("running D block");
 	mainTestList.AddTest("ExampleTestD", ExampleTestD);
-	mainTestList.AddTest("ExampleTestD", ExampleTestD);
-	mainTestList.AddTest("ExampleTestD", ExampleTestD);
-	mainTestList.AddTest("ExampleTestD", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD (1)", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD (2)", ExampleTestD);
+	mainTestList.AddTest("ExampleTestD (3)", ExampleTestD);
 	
 	mainTestList.RunTests(nullptr);
 	uts::ConOutputTestResults(mainTestList.GetContainer(), uts::ConOutputSettings{ true, true });
-	uts::ExtOutputTestResults(mainTestList.GetContainer(), uts::ExtOutputSettings{ true });
+	uts::ExtOutputTestResults(mainTestList.GetContainer(), uts::ExtOutputSettings{ true });*/
 
     std::cout << "Hello World!\n";
 }

@@ -270,7 +270,7 @@ uts::UTSListConstructor::UTSListConstructor(void)
 
 uts::UTSListConstructor::~UTSListConstructor(void)
 {
-	free(m_listMain);
+	m_listMain->free();
 
 	delete m_listMain;
 }
@@ -326,7 +326,7 @@ void uts::UTSListConstructor::RunTests(void* args)
 
 		if (m_listMain->m_nodes[i].m_test != nullptr)
 		{
-			m_listMain->m_nodes[i].m_test(args);
+			m_listMain->m_nodes[i].m_testResults = m_listMain->m_nodes[i].m_test(args);
 		}
 	}
 }
