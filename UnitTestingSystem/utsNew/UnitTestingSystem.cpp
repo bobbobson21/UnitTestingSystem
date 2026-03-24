@@ -7,8 +7,8 @@
 
 void uts::UTSUnitTestResults::WriteStringSafe(char** writeTo, const char* stringToWrite)
 {
-	(*writeTo) = new char[strnlen(stringToWrite, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	(*writeTo) = new char[strnlen(stringToWrite, UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1];
+	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1));
 }
 
 void uts::UTSUnitTestResults::free(void)

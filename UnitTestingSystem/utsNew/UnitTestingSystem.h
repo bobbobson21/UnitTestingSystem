@@ -3,6 +3,7 @@
 #include <fstream>
 
 #define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
+#define UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE 2024
 
 #ifdef UTSNEW_EXPORTS
 #define UTSNEW_API __declspec(dllexport)
@@ -42,6 +43,11 @@ namespace uts
 		char* m_objectFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY,  ACCESS THOUGTH WriteStringSafe
 		char* m_objectFileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
 
+		/// <summary>
+		/// use this to add descriptions and file location also file paths neeed 4 slashes as folder separators. This also can not surpass UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE in length
+		/// </summary>
+		/// <param name="writeTo">a pointer to a char variable that you whish to write to which can be passed using the refance oparator</param>
+		/// <param name="stringToWrite">the data you wish to safely write to that buffer</param>
 		void WriteStringSafe(char** writeTo, const char* stringToWrite);
 		void free(void);
 	};

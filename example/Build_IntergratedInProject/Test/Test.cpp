@@ -53,18 +53,18 @@ int main()
 	mainTestTree.PushPopTest("ExampleTest", ExampleTest);
 	mainTestTree.PushPopNotice("running C block");
 	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC_1", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC_2", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC_3", ExampleTestC);
 	mainTestTree.PopDomain();
 
 	mainTestTree.PushDomain("instance");
 	mainTestTree.PushPopTest("ExampleTestB", ExampleTestB);
 	mainTestTree.PushPopNotice("running D block");
 	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
-	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
-	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
-	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD_1", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD_2", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD_3", ExampleTestD);
 	mainTestTree.PopDomain();
 
 	mainTestTree.PopDomain();
