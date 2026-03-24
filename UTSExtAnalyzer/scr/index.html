@@ -13,7 +13,7 @@
 </head>
 
 <script>
-	var inapi = {scaningFolder: "", isScaning: true, fileData: [], combineNodes: true, showNotices: false}
+	var inapi = {scaningFolder: "", isScaning: true, fileData: [], lastResultFromLoadChangesAsString: "", combineNodes: true, showNotices: false}
 </script>
 
 <body onresize="SizeCheck()">
@@ -44,7 +44,7 @@
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);" name = "button_text_shownotices">show notices: off<p>
 		</button>
 
-		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px;" name = "button_clearResults" onclick = 'inapi.fileData = []; RebuildDisplay(inapi.combineNodes, inapi.showNotices);'>
+		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px;" name = "button_clearResults" onclick = 'inapi.fileData = []; inapi.lastResultFromLoadChangesAsString = ""; RebuildDisplay(inapi.combineNodes, inapi.showNotices);'>
 			<p style = "margin-left: 8px; margin-right: 8px; text-align: center;" name = "button_text_clearResults">clear results<p>
 		</button>
 
@@ -182,8 +182,6 @@
 	</script>
 
 	<script>
-		var lastResultFromLoadChangesAsString = ""
-
 		function LoadChanges()
 		{
 			const folderPath = inapi.scaningFolder;
@@ -194,7 +192,7 @@
 				{
 					try
 					{
-						if(result.contents == lastResultFromLoadChangesAsString)
+						if(result.contents == inapi.lastResultFromLoadChangesAsString)
 						{
 							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
 							return;
@@ -204,7 +202,7 @@
 					
 						if(fileContents != null)
 						{
-							lastResultFromLoadChangesAsString = result.contents;
+							inapi.lastResultFromLoadChangesAsString = result.contents;
 							inapi.fileData[inapi.fileData.length] = fileContents;
 							RebuildDisplay(inapi.combineNodes, inapi.showNotices)
 							

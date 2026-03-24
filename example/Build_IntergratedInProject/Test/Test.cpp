@@ -9,7 +9,7 @@
 uts::UTSUnitTestResults ExampleTest(void* inArgs)
 {
 	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCFail;
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
 
 	return returnData;
 }
@@ -17,7 +17,7 @@ uts::UTSUnitTestResults ExampleTest(void* inArgs)
 uts::UTSUnitTestResults ExampleTestB(void* inArgs)
 {
 	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCFail;
 
 	returnData.WriteStringSafe(&returnData.m_testResultDescriptionBuffer, "you gay");
 	returnData.WriteStringSafe(&returnData.m_objectFileLocationRelative, "Test\\\\Test.cpp");
@@ -44,7 +44,7 @@ uts::UTSUnitTestResults ExampleTestD(void* inArgs)
 
 int main()
 {
-	uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
+	/*uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
 
 	mainTestTree.PushDomain("namespace", "testing");
 	mainTestTree.PushDomain("class", "tester");
@@ -53,18 +53,18 @@ int main()
 	mainTestTree.PushPopTest("ExampleTest", ExampleTest);
 	mainTestTree.PushPopNotice("running C block");
 	mainTestTree.PushPopTest("ExampleTestC", ExampleTestC);
-	mainTestTree.PushPopTest("ExampleTestC_1", ExampleTestC);
-	mainTestTree.PushPopTest("ExampleTestC_2", ExampleTestC);
-	mainTestTree.PushPopTest("ExampleTestC_3", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC (1)", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC (2)", ExampleTestC);
+	mainTestTree.PushPopTest("ExampleTestC (3)", ExampleTestC);
 	mainTestTree.PopDomain();
 
 	mainTestTree.PushDomain("instance");
 	mainTestTree.PushPopTest("ExampleTestB", ExampleTestB);
 	mainTestTree.PushPopNotice("running D block");
 	mainTestTree.PushPopTest("ExampleTestD", ExampleTestD);
-	mainTestTree.PushPopTest("ExampleTestD_1", ExampleTestD);
-	mainTestTree.PushPopTest("ExampleTestD_2", ExampleTestD);
-	mainTestTree.PushPopTest("ExampleTestD_3", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD (1)", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD (2)", ExampleTestD);
+	mainTestTree.PushPopTest("ExampleTestD (3)", ExampleTestD);
 	mainTestTree.PopDomain();
 
 	mainTestTree.PopDomain();
@@ -72,9 +72,9 @@ int main()
 
 	mainTestTree.RunTests(nullptr);
 	uts::ConOutputTestResults(mainTestTree.GetContainer(), uts::ConOutputSettings{true, true});
-	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});
+	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});*/
 
-	/*uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
+	uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
 
 	mainTestList.AddTest("ExampleTest", ExampleTest);
 	mainTestList.AddTest("ExampleTestB", ExampleTestB);
@@ -90,7 +90,8 @@ int main()
 	mainTestList.AddTest("ExampleTestD", ExampleTestD);
 	
 	mainTestList.RunTests(nullptr);
-	uts::ConOutputTestResults(mainTestList.GetContainer(), true, false);*/
+	uts::ConOutputTestResults(mainTestList.GetContainer(), uts::ConOutputSettings{ true, true });
+	uts::ExtOutputTestResults(mainTestList.GetContainer(), uts::ExtOutputSettings{ true });
 
     std::cout << "Hello World!\n";
 }
