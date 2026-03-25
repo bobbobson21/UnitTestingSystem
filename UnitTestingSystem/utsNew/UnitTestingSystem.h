@@ -5,10 +5,16 @@
 #define UTSNEW__MAX_STRING_BUFFER_SIZE 1024
 #define UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE 2024
 
+#ifndef _STATIC
 #ifdef UTSNEW_EXPORTS
 #define UTSNEW_API __declspec(dllexport)
 #else
 #define UTSNEW_API __declspec(dllimport)
+#endif
+#endif
+
+#ifdef _STATIC
+#define UTSNEW_API
 #endif
 
 namespace uts
