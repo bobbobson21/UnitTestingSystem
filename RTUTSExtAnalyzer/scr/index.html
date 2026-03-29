@@ -13,7 +13,7 @@
 </head>
 
 <script>
-	var inapi = {scaningFolder: "", isScaning: true, fileData: [], lastResultFromLoadChangesAsString: "", combineNodes: true, showNotices: false}
+	var inapi = {scaningFolder: "", isScaning: true, fileData: [], lastResultFromLoadChangesAsString: "", combineNodes: true, showNotices: false, ColorCodeMeanings: ["TSCPass","TSCWarning","TSCDetectionFailed","TSCTryCatchFail","TSCFail","TSCCrashFail","TSCMaxNull"]}
 </script>
 
 <body onresize="SizeCheck()">
@@ -102,7 +102,10 @@
 				var details = '<br><p>' + us.testResults.testResultDescriptionBuffer + '</p>'
 				if(us.testResults.testResultDescriptionBuffer == "") {details = ""} else { childrenExceptionCount = childrenExceptionCount +1; }
 
-				var colorCode = '<div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_' + us.testResults.testResultSeverityCode.toString() + '"></div>'
+				var displayCode = '<p> code:' + inapi.ColorCodeMeanings[us.testResults.testResultSeverityCode].toString() + '</p>'
+				if(us.children.length != 0) {displayCode = ""} else { childrenExceptionCount = childrenExceptionCount +1; }
+
+				var colorCodeBar = '<div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_' + us.testResults.testResultSeverityCode.toString() + '"></div>'
 
 				var objectFilePath = {};
 				objectFilePath.filePath = "";
@@ -120,14 +123,13 @@
 				var openTestContent = '<button class = "ButtonBasic" style = "width: calc(50% - 2px); height: 22px; margin-left: 4px; margin-top:8px;" onclick = \'api.OpenFileInCode('  + JSON.stringify(openTestFilePath) + ')\'><p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);">open unit test location in vs code</p></button>'
 				if(us.testResults.unitTestFileLocation == "") { openTestContent = "" } else { childrenExceptionCount = childrenExceptionCount +1; }
 
-
-				var toggleContent = '<button onclick = "ToggleChildren( document.getElementsByName(\'' + groupName + "_" + us.identifyer + '\')[0], '+ (3 + childrenExceptionCount).toString() +' ); ToggleText(\'ddb_'+ groupName + "_" + us.identifyer+'\', \'hide children ▼\', \'show children ▲\');"><p name = "ddb_'+ groupName + "_" + us.identifyer+'">hide children ▼</p></button>'
+				var baseIngoreCount = 3;
+				var toggleContent = '<button onclick = "ToggleChildren( document.getElementsByName(\'' + groupName + "_" + us.identifyer + '\')[0], '+ (baseIngoreCount + childrenExceptionCount).toString() +' ); ToggleText(\'ddb_'+ groupName + "_" + us.identifyer+'\', \'hide children ▼\', \'show children ▲\');"><p name = "ddb_'+ groupName + "_" + us.identifyer+'">hide children ▼</p></button>'
 				if(us.children.length == 0) {toggleContent = ""}
 
 
-				var body = '<div class = "DivBasics" id = "'+ us.testResults.testResultSeverityCode +'" name = "' + groupName + "_" + us.identifyer + '">' + colorCode + '<h1>'+ us.identifyer +'</h1>' + details + openObjectContent + openTestContent + toggleContent + '</div>'
+				var body = '<div class = "DivBasics" id = "'+ us.testResults.testResultSeverityCode +'" name = "' + groupName + "_" + us.identifyer + '">' + colorCodeBar + '<h1>'+ us.identifyer +'</h1>' + displayCode + details + openObjectContent + openTestContent + toggleContent + '</div>'
 				if(us.identifyer == "") { body = '<div class = "DivBasics", name = "' + groupName + "_" + us.runningTestsBellowNotice + '"><div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_notice"></div><h2>'+ us.runningTestsBellowNotice +'</h2></div>' }
-
 
 
 				element.insertAdjacentHTML("beforeend", body);
@@ -185,7 +187,7 @@
 		function LoadChanges()
 		{
 			const folderPath = inapi.scaningFolder;
-			api.ReadFile({fromRootPath: folderPath, title: "UTSext", type: "dat",}).then((result) => {
+			api.ReadFile({fromRootPath: folderPath, title: "RTUTSext", type: "dat",}).then((result) => {
 				let fileContents = "failed to reach";
 		
 				if(result.success == true)
@@ -194,7 +196,7 @@
 					{
 						if(result.contents == inapi.lastResultFromLoadChangesAsString)
 						{
-							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
+							api.CreateFile({fromRootPath: folderPath, title: "RTUTSext", type: "dat", contents: ""})
 							return;
 						}
 
@@ -206,7 +208,7 @@
 							inapi.fileData[inapi.fileData.length] = fileContents;
 							RebuildDisplay(inapi.combineNodes, inapi.showNotices)
 							
-							api.CreateFile({fromRootPath: folderPath, title: "UTSext", type: "dat", contents: ""})
+							api.CreateFile({fromRootPath: folderPath, title: "RTUTSext", type: "dat", contents: ""})
 						}
 					}
 					catch

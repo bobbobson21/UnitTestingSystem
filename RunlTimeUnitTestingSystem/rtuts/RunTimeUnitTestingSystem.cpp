@@ -1,17 +1,18 @@
-// utsNew.cpp : Defines the exported functions for the DLL.
+// RTRTUTS.cpp : Defines the exported functions for the DLL.
 //
 
 #include "pch.h"
 
-#include "UnitTestingSystem.h"
+#include "RunTimeUnitTestingSystem.h"
 
-void uts::UTSUnitTestResults::WriteStringSafe(char** writeTo, const char* stringToWrite)
+void rtuts::RTUTSUnitTestResults::WriteStringSafe(char** writeTo, const char* stringToWrite)
 {
-	(*writeTo) = new char[strnlen(stringToWrite, UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1];
-	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, UTSNEW__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1));
+	(*writeTo) = new char[strnlen(stringToWrite, RTRTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1];
+	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, RTRTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1));
 }
 
-void uts::UTSUnitTestResults::free(void)
+
+void rtuts::RTUTSUnitTestResults::free(void)
 {
 	delete[] m_testResultDescriptionBuffer;
 
@@ -22,7 +23,7 @@ void uts::UTSUnitTestResults::free(void)
 	delete[] m_objectFileLocationRelative;
 }
 
-void uts::UTSNode::free(void)
+void rtuts::RTUTSNode::free(void)
 {
 	m_testResults.free();
 
@@ -33,7 +34,7 @@ void uts::UTSNode::free(void)
 }
 
 
-void uts::UTSDataContainer::free(void)
+void rtuts::RTUTSDataContainer::free(void)
 {
 	for (unsigned int i = 0; i < m_nodesLength; i++)
 	{
@@ -41,18 +42,20 @@ void uts::UTSDataContainer::free(void)
 	}
 
 	delete[] m_nodes;
+
 	m_nodesLength = 0;
 	m_rootObjectsLength = 0;
+	m_rootObjectsAvoidanceLength = 0;
 }
 
-void uts::UTSDataContainer::AddNode(UTSNode node, unsigned int parentIndex)
+void rtuts::RTUTSDataContainer::AddNode(RTUTSNode node, unsigned int parentIndex)
 {
 	//adds node to tree
-	UTSNode* nodeBuffer = new UTSNode[m_nodesLength + 1];
+	RTUTSNode* nodeBuffer = new RTUTSNode[m_nodesLength + 1];
 
 	if (m_nodes != nullptr)
 	{
-		memcpy(nodeBuffer, m_nodes, sizeof(UTSNode) * m_nodesLength);
+		memcpy(nodeBuffer, m_nodes, sizeof(RTUTSNode) * m_nodesLength);
 		delete[] m_nodes;
 	}
 
@@ -82,18 +85,19 @@ void uts::UTSDataContainer::AddNode(UTSNode node, unsigned int parentIndex)
 }
 
 
-uts::UTSTreeConstructor::UTSTreeConstructor(void)
+
+rtuts::RTUTSTreeConstructor::RTUTSTreeConstructor(void)
 {
-	m_treeMain = new UTSDataContainer();
-	Replant("root");
+	m_treeMain = new RTUTSDataContainer();
+	Replant("tree root");
 }
 
-uts::UTSTreeConstructor::UTSTreeConstructor(const char* rootName)
+rtuts::RTUTSTreeConstructor::RTUTSTreeConstructor(const char* rootName)
 {
 	Replant(rootName);
 }
 
-uts::UTSTreeConstructor::~UTSTreeConstructor(void)
+rtuts::RTUTSTreeConstructor::~RTUTSTreeConstructor(void)
 {
 	m_treeMain->free();
 	DomainIdStackFree();
@@ -101,68 +105,68 @@ uts::UTSTreeConstructor::~UTSTreeConstructor(void)
 	delete m_treeMain;
 }
 
-void uts::UTSTreeConstructor::PushDomain(const char* identifyer)
+void rtuts::RTUTSTreeConstructor::PushDomain(const char* identifyer)
 {
-	UTSNode newDomain = UTSNode();
+	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_identifyer = new char[strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
 	DomainIdStackPush(m_treeMain->m_nodesLength - 1);
 }
 
-void uts::UTSTreeConstructor::PushDomain(const char* type, const char* identifyer)
+void rtuts::RTUTSTreeConstructor::PushDomain(const char* type, const char* identifyer)
 {
-	char* idBuffer = new char[(strlen(type) + strlen(identifyer)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strlen(type));
-	idBuffer[strlen(type) + 0] = ':';
-	idBuffer[strlen(type) + 1] = ' ';
-	memcpy(idBuffer + (strlen(type) + 2), identifyer, strlen(identifyer));
-	idBuffer[strlen(type) + strlen(identifyer) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	PushDomain(idBuffer);
 	delete[] idBuffer;
 }
 
 
-void uts::UTSTreeConstructor::PopDomain()
+void rtuts::RTUTSTreeConstructor::PopDomain()
 {
 	DomainIdStackPop();
 }
 
 
-void uts::UTSTreeConstructor::PushPopTest(const char* identifyer, UTSUnitTest test)
+void rtuts::RTUTSTreeConstructor::PushPopTest(const char* identifyer, RTUTSUnitTest test)
 {
-	UTSNode newDomain = UTSNode();
+	RTUTSNode newDomain = RTUTSNode();
 	newDomain.m_test = test;
 
 	char type[] = "test";
-	char* idBuffer = new char[(strlen(type) + strlen(identifyer)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strlen(type));
-	idBuffer[strlen(type) + 0] = ':';
-	idBuffer[strlen(type) + 1] = ' ';
-	memcpy(idBuffer + (strlen(type) + 2), identifyer, strlen(identifyer));
-	idBuffer[strlen(type) + strlen(identifyer) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	newDomain.m_identifyer = idBuffer;
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
 }
 
-void uts::UTSTreeConstructor::PushPopNotice(const char* notice)
+void rtuts::RTUTSTreeConstructor::PushPopNotice(const char* notice)
 {
-	UTSNode newDomain = UTSNode();
+	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
 }
 
 
-void uts::UTSTreeConstructor::Replant(const char* identifyer)
+void rtuts::RTUTSTreeConstructor::Replant(const char* identifyer)
 {
 	//kills old tree
 	m_treeMain->free();
@@ -173,10 +177,10 @@ void uts::UTSTreeConstructor::Replant(const char* identifyer)
 	//make new root node
 	unsigned int rootIndex = 0; //it cant be anything else
 
-	UTSNode root = UTSNode();
+	RTUTSNode root = RTUTSNode();
 
-	root.m_identifyer = new char[strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(root.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	root.m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(root.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	//adds node to tree
 	m_treeMain->AddNode(root, rootIndex);
@@ -185,7 +189,7 @@ void uts::UTSTreeConstructor::Replant(const char* identifyer)
 }
 
 
-void uts::UTSTreeConstructor::RunTests(void* args)
+void rtuts::RTUTSTreeConstructor::RunTests(void* args)
 {
 	for (size_t i = 0; i < m_treeMain->m_nodesLength; i++)
 	{
@@ -197,9 +201,9 @@ void uts::UTSTreeConstructor::RunTests(void* args)
 		if (m_treeMain->m_nodes[i].m_test != nullptr)
 		{
 			m_treeMain->m_nodes[i].m_testResults = m_treeMain->m_nodes[i].m_test(args);
-			UTSUnitTestSeverityCode resultCode = m_treeMain->m_nodes[i].m_testResults.m_testResultSeverityCode;
+			RTUTSUnitTestSeverityCode resultCode = m_treeMain->m_nodes[i].m_testResults.m_testResultSeverityCode;
 
-			if (resultCode != UTSUnitTestSeverityCode::TSCPass) //test failed
+			if (resultCode != RTUTSUnitTestSeverityCode::TSCPass) //test failed
 			{
 				m_treeMain->m_nodes[i].m_testResults.m_testResultSeverityCode = resultCode;
 				int currentTreeTravelIndex = m_treeMain->m_nodes[i].m_parent;
@@ -219,13 +223,13 @@ void uts::UTSTreeConstructor::RunTests(void* args)
 	}
 }
 
-uts::UTSDataContainer* uts::UTSTreeConstructor::GetContainer(void)
+rtuts::RTUTSDataContainer* rtuts::RTUTSTreeConstructor::GetContainer(void)
 {
 	return m_treeMain;
 }
 
 
-void uts::UTSTreeConstructor::DomainIdStackPush(unsigned int item)
+void rtuts::RTUTSTreeConstructor::DomainIdStackPush(unsigned int item)
 {
 	if (m_activeDomainStackIndex >= m_activeDomainStackLength)
 	{
@@ -245,77 +249,79 @@ void uts::UTSTreeConstructor::DomainIdStackPush(unsigned int item)
 	m_activeDomainStackIndex = m_activeDomainStackIndex + 1;
 }
 
-void uts::UTSTreeConstructor::DomainIdStackPop()
+void rtuts::RTUTSTreeConstructor::DomainIdStackPop()
 {
 	m_activeDomainStackIndex = m_activeDomainStackIndex - 1;
 }
 
-void uts::UTSTreeConstructor::DomainIdStackFree()
+void rtuts::RTUTSTreeConstructor::DomainIdStackFree()
 {
 	delete[] m_activeDomainStackPointer;
 	m_activeDomainStackLength = 0;
 	m_activeDomainStackLength = 0;
 }
 
-unsigned int uts::UTSTreeConstructor::DomainIdStackRead()
+unsigned int rtuts::RTUTSTreeConstructor::DomainIdStackRead()
 {
 	return m_activeDomainStackPointer[m_activeDomainStackIndex - 1];
 }
 
 
-uts::UTSListConstructor::UTSListConstructor(void)
+
+rtuts::RTUTSListConstructor::RTUTSListConstructor(void)
 {
-	m_listMain = new UTSDataContainer();
+	m_listMain = new RTUTSDataContainer();
 }
 
-uts::UTSListConstructor::~UTSListConstructor(void)
+rtuts::RTUTSListConstructor::~RTUTSListConstructor(void)
 {
 	m_listMain->free();
 
 	delete m_listMain;
 }
 
-void uts::UTSListConstructor::AddTest(const char* identifyer, UTSUnitTest test)
+
+void rtuts::RTUTSListConstructor::AddTest(const char* identifyer, RTUTSUnitTest test)
 {
 	unsigned int newDomainIndex = m_listMain->m_nodesLength;
 
-	UTSNode newDomain = UTSNode();
+	RTUTSNode newDomain = RTUTSNode();
 	newDomain.m_test = test;
 
 	char type[] = "test";
-	char* idBuffer = new char[(strlen(type) + strlen(identifyer)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strlen(type));
-	idBuffer[strlen(type) + 0] = ':';
-	idBuffer[strlen(type) + 1] = ' ';
-	memcpy(idBuffer + (strlen(type) + 2), identifyer, strlen(identifyer));
-	idBuffer[strlen(type) + strlen(identifyer) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	newDomain.m_identifyer = idBuffer;
 	m_listMain->AddNode(newDomain, newDomainIndex);
 	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
 }
 
-void uts::UTSListConstructor::AddNotice(const char* notice)
+void rtuts::RTUTSListConstructor::AddNotice(const char* notice)
 {
 	unsigned int newDomainIndex = m_listMain->m_nodesLength;
-	UTSNode newDomain = UTSNode();
+	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, UTSNEW__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_listMain->AddNode(newDomain, newDomainIndex);
 	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
 }
 
 
-void uts::UTSListConstructor::ClearList(void)
+void rtuts::RTUTSListConstructor::ClearList(void)
 {
 	m_listMain->free();
 }
 
 
-void uts::UTSListConstructor::RunTests(void* args)
+void rtuts::RTUTSListConstructor::RunTests(void* args)
 {
 	for (unsigned int i = 0; i < m_listMain->m_nodesLength; i++)
 	{
@@ -331,23 +337,144 @@ void uts::UTSListConstructor::RunTests(void* args)
 	}
 }
 
-uts::UTSDataContainer* uts::UTSListConstructor::GetContainer(void)
+rtuts::RTUTSDataContainer* rtuts::RTUTSListConstructor::GetContainer(void)
 {
 	return m_listMain;
 }
 
 
-void uts::ConOutputTestResults(const UTSDataContainer* results, ConOutputSettings settings)
+
+rtuts::RTUTSBindedListConstructor::RTUTSBindedListConstructor(void)
+{
+	m_listMain = new RTUTSDataContainer();
+	SetListIdenifyer("list root");
+}
+
+rtuts::RTUTSBindedListConstructor::RTUTSBindedListConstructor(const char* identifyer)
+{
+	m_listMain = new RTUTSDataContainer();
+	SetListIdenifyer(identifyer);
+}
+
+rtuts::RTUTSBindedListConstructor::~RTUTSBindedListConstructor(void)
+{
+	m_listMain->free();
+
+	delete m_listMain;
+}
+
+
+void rtuts::RTUTSBindedListConstructor::AddTest(const char* identifyer, RTUTSUnitTest test)
+{
+	RTUTSNode newDomain = RTUTSNode();
+	newDomain.m_test = test;
+
+	char type[] = "test";
+	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
+
+	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
+
+	newDomain.m_identifyer = idBuffer;
+	m_listMain->AddNode(newDomain, 0);
+	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
+}
+
+void rtuts::RTUTSBindedListConstructor::AddNotice(const char* notice)
+{
+	RTUTSNode newDomain = RTUTSNode();
+
+	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+
+	m_listMain->AddNode(newDomain, 0);
+	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
+}
+
+
+void rtuts::RTUTSBindedListConstructor::ClearList(void)
+{
+	char* titleBuffer = new char[strnlen(m_listMain->m_nodes[0].m_identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)];
+	memcpy(titleBuffer, m_listMain->m_nodes[0].m_identifyer, sizeof(char) * (strnlen(m_listMain->m_nodes[0].m_identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+
+	m_listMain->free();
+	SetListIdenifyer(titleBuffer);
+
+	delete titleBuffer;
+}
+
+void rtuts::RTUTSBindedListConstructor::SetListIdenifyer(const char* identifyer)
+{
+	if (m_listMain->m_nodesLength == 0)
+	{
+		m_listMain->m_rootObjectsAvoidanceLength = 1;
+		m_listMain->m_rootObjectsLength = 1;
+
+		RTUTSNode newDomain = RTUTSNode();
+
+		newDomain.m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+		memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+
+		m_listMain->AddNode(newDomain, 0);
+	}
+	else
+	{
+		delete[] m_listMain->m_nodes;
+
+		m_listMain->m_nodes[0].m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+		memcpy(m_listMain->m_nodes[0].m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	}
+}
+
+void rtuts::RTUTSBindedListConstructor::RunTests(void* args)
+{
+	for (unsigned int i = 0; i < m_listMain->m_nodesLength; i++)
+	{
+		if (m_listMain->m_nodes[i].m_runningTestsBellowNotice != nullptr) //output notices
+		{
+			std::cout << "\033[0;96;49m" << "Unit Test System is running: " << "\033[0m" << m_listMain->m_nodes[i].m_runningTestsBellowNotice << "\n";
+		}
+
+		if (m_listMain->m_nodes[i].m_test != nullptr)
+		{
+			m_listMain->m_nodes[i].m_testResults = m_listMain->m_nodes[i].m_test(args);
+
+			if (((unsigned int)m_listMain->m_nodes[i].m_testResults.m_testResultSeverityCode) > ((unsigned int)m_listMain->m_nodes[m_listMain->m_nodes[i].m_parent].m_testResults.m_testResultSeverityCode))
+			{
+				m_listMain->m_nodes[m_listMain->m_nodes[i].m_parent].m_testResults.m_testResultSeverityCode = m_listMain->m_nodes[i].m_testResults.m_testResultSeverityCode;
+			}
+		}
+	}
+}
+
+rtuts::RTUTSDataContainer* rtuts::RTUTSBindedListConstructor::GetContainer(void)
+{
+	return m_listMain;
+}
+
+
+void rtuts::ConOutputTestResults(const RTUTSDataContainer* results, ConOutputSettings settings)
 {
 	std::cout << "\033[0;96;49m" << "\n";
 	std::cout << "======================================================================================================" << "\n";
-	std::cout << "Unit Testing System Output" << "\n";
+	std::cout << "Run Time Unit Testing System Output" << "\n";
 	std::cout << "======================================================================================================" << "\n\n";
 	std::cout << "\033[0m";
 
 	int startingDepth = 0;
+	unsigned int startingPoint = results->m_rootObjectsAvoidanceLength;
+	unsigned int endingPoint = results->m_rootObjectsLength;
 
-	for (unsigned int indexOfRootNode = 0; indexOfRootNode < results->m_rootObjectsLength; indexOfRootNode++)
+	if (settings.m_outputDataFromRootAvoidance == true && results->m_rootObjectsAvoidanceLength > 0)
+	{
+		startingPoint = 0;
+		endingPoint = results->m_rootObjectsAvoidanceLength;
+	}
+
+	for (unsigned int indexOfRootNode = startingPoint; indexOfRootNode < endingPoint; indexOfRootNode++)
 	{
 		ConOutputDomainsAndSubDomains(results, indexOfRootNode, startingDepth, settings); //more than one root is used in lists but other than that it is just one element most of the time
 	}
@@ -357,26 +484,26 @@ void uts::ConOutputTestResults(const UTSDataContainer* results, ConOutputSetting
 	std::cout << "\033[0m";
 }
 
-void uts::ConOutputTestSeverityCode(UTSUnitTestSeverityCode testCode)
+void rtuts::ConOutputTestSeverityCode(RTUTSUnitTestSeverityCode testCode)
 {
 	switch (testCode)
 	{
-	case UTSUnitTestSeverityCode::TSCPass:
+	case RTUTSUnitTestSeverityCode::TSCPass:
 		std::cout << "\033[0;32;102m" << "+";
 		break;
-	case UTSUnitTestSeverityCode::TSCWarning:
+	case RTUTSUnitTestSeverityCode::TSCWarning:
 		std::cout << "\033[0;33;103m" << "~";
 		break;
-	case UTSUnitTestSeverityCode::TSCDetectionFailed:
+	case RTUTSUnitTestSeverityCode::TSCDetectionFailed:
 		std::cout << "\033[0;30;100m" << "?";
 		break;
-	case UTSUnitTestSeverityCode::TSCTryCatchFail:
+	case RTUTSUnitTestSeverityCode::TSCTryCatchFail:
 		std::cout << "\033[0;30;45m" << "/";
 		break;
-	case UTSUnitTestSeverityCode::TSCFail:
+	case RTUTSUnitTestSeverityCode::TSCFail:
 		std::cout << "\033[0;31;101m" << "!";
 		break;
-	case UTSUnitTestSeverityCode::TSCCrashFail:
+	case RTUTSUnitTestSeverityCode::TSCCrashFail:
 		std::cout << "\033[0;36;106m" << "*";
 		break;
 	case TSCMaxNull: default:
@@ -387,7 +514,7 @@ void uts::ConOutputTestSeverityCode(UTSUnitTestSeverityCode testCode)
 	std::cout << "\033[0m";
 }
 
-void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigned int domainIndex, unsigned int depth, ConOutputSettings settings)
+void rtuts::ConOutputDomainsAndSubDomains(const RTUTSDataContainer* results, unsigned int domainIndex, unsigned int depth, ConOutputSettings settings)
 {
 	char colorBaseWhite[] = "\033[0m";
 
@@ -444,14 +571,14 @@ void uts::ConOutputDomainsAndSubDomains(const UTSDataContainer* results, unsigne
 	}
 }
 
-bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSettings settings)
+bool rtuts::ExtOutputTestResults(const RTUTSDataContainer* results, ExtOutputSettings settings)
 {
 	const unsigned int maxCreationDelay = 250;
 	const unsigned int maxCreationAttempts = 8;
 	const unsigned int numberBufferLength = 8;
 
-	char normalExportLoccation[] = "..\\UTSext.dat";
-	char inlineExportLoccation[] = "UTSext.dat";
+	char normalExportLoccation[] = "..\\RTUTSext.dat";
+	char inlineExportLoccation[] = "RTUTSext.dat";
 
 	char* fileLocation = normalExportLoccation;
 
@@ -479,15 +606,24 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 
 	file << "{";
 
+	unsigned int startingPoint = results->m_rootObjectsAvoidanceLength;
+	unsigned int endingPoint = results->m_rootObjectsLength;
+
+	if (settings.m_outputDataFromRootAvoidance == true && results->m_rootObjectsAvoidanceLength > 0) //finds out what should and shouldnt be printed
+	{
+		startingPoint = 0;
+		endingPoint = results->m_rootObjectsAvoidanceLength;
+	}
+
 	char rootObjectsLengthNumBuffer[numberBufferLength] = {};
-	std::snprintf(rootObjectsLengthNumBuffer, numberBufferLength, "%d", results->m_rootObjectsLength);
+	std::snprintf(rootObjectsLengthNumBuffer, numberBufferLength, "%d", endingPoint);
 	file << "\"rootObjectsLength\": " << rootObjectsLengthNumBuffer << ",";
 
 	file << "\"nodes\": [";
 
-	for (size_t i = 0; i < results->m_nodesLength; i++)
+	for (unsigned int currentNodeIndex = startingPoint; currentNodeIndex < results->m_nodesLength; currentNodeIndex++)
 	{
-		UTSNode currentNode = results->m_nodes[i];
+		RTUTSNode currentNode = results->m_nodes[currentNodeIndex];
 		file << "{";
 
 		if (currentNode.m_identifyer != nullptr) { file << "\"identifyer\": \"" << currentNode.m_identifyer << "\","; }
@@ -530,7 +666,7 @@ bool uts::ExtOutputTestResults(const UTSDataContainer* results, ExtOutputSetting
 
 		file << "}";
 		file << "}";
-		if (i != results->m_nodesLength - 1) { file << ","; }
+		if (currentNodeIndex != results->m_nodesLength - 1) { file << ","; }
 	}
 
 	file << "]";

@@ -1,0 +1,2 @@
+#define RTUTS_API __declspec(dllexport)
+#define RTUTS_API __declspec(dllimport)

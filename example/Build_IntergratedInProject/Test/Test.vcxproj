@@ -129,15 +129,15 @@
     <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib\utsNew\UnitTestingSystem.h" />
+    <ClInclude Include="lib\rtuts\RunTimeUnitTestingSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="lib\utsNew.lib" />
+    <Library Include="lib\rtuts.lib" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\utsNew\utsNew.dll" />
-    <None Include="lib\utsNew\utsNew.exp" />
-    <None Include="lib\utsNew\utsNew.pdb" />
+    <None Include="lib\rtuts\rtuts.dll" />
+    <None Include="lib\rtuts\rtuts.exp" />
+    <None Include="lib\rtuts\rtuts.pdb" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

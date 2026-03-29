@@ -3,21 +3,21 @@
 
 #include <iostream>
 
-#include "utsNew/UnitTestingSystem.h"
+#include "rtuts/RunTimeUnitTestingSystem.h"
 //#include "UnitTestingSystem.h"
 
-uts::UTSUnitTestResults ExampleTest(void* inArgs)
+rtuts::RTUTSUnitTestResults ExampleTest(void* inArgs)
 {
-	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+	rtuts::RTUTSUnitTestResults returnData = rtuts::RTUTSUnitTestResults();
+	returnData.m_testResultSeverityCode = rtuts::RTUTSUnitTestSeverityCode::TSCPass;
 
 	return returnData;
 }
 
-uts::UTSUnitTestResults ExampleTestB(void* inArgs)
+rtuts::RTUTSUnitTestResults ExampleTestB(void* inArgs)
 {
-	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCFail;
+	rtuts::RTUTSUnitTestResults returnData = rtuts::RTUTSUnitTestResults();
+	returnData.m_testResultSeverityCode = rtuts::RTUTSUnitTestSeverityCode::TSCFail;
 
 	returnData.WriteStringSafe(&returnData.m_testResultDescriptionBuffer, "you gay");
 	returnData.WriteStringSafe(&returnData.m_objectFileLocationRelative, "Test\\\\Test.cpp");
@@ -26,25 +26,25 @@ uts::UTSUnitTestResults ExampleTestB(void* inArgs)
 	return returnData;
 }
 
-uts::UTSUnitTestResults ExampleTestC(void* inArgs)
+rtuts::RTUTSUnitTestResults ExampleTestC(void* inArgs)
 {
-	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+	rtuts::RTUTSUnitTestResults returnData = rtuts::RTUTSUnitTestResults();
+	returnData.m_testResultSeverityCode = rtuts::RTUTSUnitTestSeverityCode::TSCPass;
 
 	return returnData;
 }
 
-uts::UTSUnitTestResults ExampleTestD(void* inArgs)
+rtuts::RTUTSUnitTestResults ExampleTestD(void* inArgs)
 {
-	uts::UTSUnitTestResults returnData = uts::UTSUnitTestResults();
-	returnData.m_testResultSeverityCode = uts::UTSUnitTestSeverityCode::TSCPass;
+	rtuts::RTUTSUnitTestResults returnData = rtuts::RTUTSUnitTestResults();
+	returnData.m_testResultSeverityCode = rtuts::RTUTSUnitTestSeverityCode::TSCPass;
 
 	return returnData;
 }
 
 int main()
 {
-	uts::UTSTreeConstructor mainTestTree = uts::UTSTreeConstructor();
+	rtuts::RTUTSTreeConstructor mainTestTree = rtuts::RTUTSTreeConstructor();
 
 	mainTestTree.PushDomain("namespace", "testing");
 	mainTestTree.PushDomain("class", "tester");
@@ -71,10 +71,10 @@ int main()
 	mainTestTree.PopDomain();
 
 	mainTestTree.RunTests(nullptr);
-	uts::ConOutputTestResults(mainTestTree.GetContainer(), uts::ConOutputSettings{true, true});
-	uts::ExtOutputTestResults(mainTestTree.GetContainer(), uts::ExtOutputSettings{true});
+	rtuts::ConOutputTestResults(mainTestTree.GetContainer(), rtuts::ConOutputSettings{true, true});
+	rtuts::ExtOutputTestResults(mainTestTree.GetContainer(), rtuts::ExtOutputSettings{true});
 
-	/*uts::UTSListConstructor mainTestList = uts::UTSListConstructor();
+	/*rtuts::RTUTSBindedListConstructor mainTestList = rtuts::RTUTSBindedListConstructor();
 
 	mainTestList.AddTest("ExampleTest", ExampleTest);
 	mainTestList.AddTest("ExampleTestB", ExampleTestB);
@@ -90,8 +90,8 @@ int main()
 	mainTestList.AddTest("ExampleTestD (3)", ExampleTestD);
 	
 	mainTestList.RunTests(nullptr);
-	uts::ConOutputTestResults(mainTestList.GetContainer(), uts::ConOutputSettings{ true, true });
-	uts::ExtOutputTestResults(mainTestList.GetContainer(), uts::ExtOutputSettings{ true });*/
+	rtuts::ConOutputTestResults(mainTestList.GetContainer(), rtuts::ConOutputSettings{ true, true });
+	rtuts::ExtOutputTestResults(mainTestList.GetContainer(), rtuts::ExtOutputSettings{ true });*/
 
     std::cout << "Hello World!\n";
 }
