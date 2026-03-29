@@ -5,12 +5,6 @@
 
 #include "RunTimeUnitTestingSystem.h"
 
-void rtuts::RTUTSUnitTestResults::WriteStringSafe(char** writeTo, const char* stringToWrite)
-{
-	(*writeTo) = new char[strnlen(stringToWrite, RTRTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1];
-	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, RTRTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1));
-}
-
 
 void rtuts::RTUTSUnitTestResults::free(void)
 {
@@ -109,8 +103,8 @@ void rtuts::RTUTSTreeConstructor::PushDomain(const char* identifyer)
 {
 	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_identifyer = new char[strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
 	DomainIdStackPush(m_treeMain->m_nodesLength - 1);
@@ -118,13 +112,13 @@ void rtuts::RTUTSTreeConstructor::PushDomain(const char* identifyer)
 
 void rtuts::RTUTSTreeConstructor::PushDomain(const char* type, const char* identifyer)
 {
-	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
-	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	PushDomain(idBuffer);
 	delete[] idBuffer;
@@ -143,13 +137,13 @@ void rtuts::RTUTSTreeConstructor::PushPopTest(const char* identifyer, RTUTSUnitT
 	newDomain.m_test = test;
 
 	char type[] = "test";
-	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
-	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	newDomain.m_identifyer = idBuffer;
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
@@ -159,8 +153,8 @@ void rtuts::RTUTSTreeConstructor::PushPopNotice(const char* notice)
 {
 	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_treeMain->AddNode(newDomain, DomainIdStackRead());
 }
@@ -179,8 +173,8 @@ void rtuts::RTUTSTreeConstructor::Replant(const char* identifyer)
 
 	RTUTSNode root = RTUTSNode();
 
-	root.m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(root.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	root.m_identifyer = new char[strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(root.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	//adds node to tree
 	m_treeMain->AddNode(root, rootIndex);
@@ -289,13 +283,13 @@ void rtuts::RTUTSListConstructor::AddTest(const char* identifyer, RTUTSUnitTest 
 	newDomain.m_test = test;
 
 	char type[] = "test";
-	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
-	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	newDomain.m_identifyer = idBuffer;
 	m_listMain->AddNode(newDomain, newDomainIndex);
@@ -307,8 +301,8 @@ void rtuts::RTUTSListConstructor::AddNotice(const char* notice)
 	unsigned int newDomainIndex = m_listMain->m_nodesLength;
 	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_listMain->AddNode(newDomain, newDomainIndex);
 	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
@@ -370,13 +364,13 @@ void rtuts::RTUTSBindedListConstructor::AddTest(const char* identifyer, RTUTSUni
 	newDomain.m_test = test;
 
 	char type[] = "test";
-	char* idBuffer = new char[(strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
+	char* idBuffer = new char[(strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE)) + 3];
 
-	memcpy(idBuffer, type, strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
-	memcpy(idBuffer + (strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE));
-	idBuffer[strnlen(type, RTRTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
+	memcpy(idBuffer, type, strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 0] = ':';
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 1] = ' ';
+	memcpy(idBuffer + (strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + 2), identifyer, strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE));
+	idBuffer[strnlen(type, RTUTS__MAX_STRING_BUFFER_SIZE) + strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 2] = '\0';
 
 	newDomain.m_identifyer = idBuffer;
 	m_listMain->AddNode(newDomain, 0);
@@ -387,8 +381,8 @@ void rtuts::RTUTSBindedListConstructor::AddNotice(const char* notice)
 {
 	RTUTSNode newDomain = RTUTSNode();
 
-	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	newDomain.m_runningTestsBellowNotice = new char[strnlen(notice, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+	memcpy(newDomain.m_runningTestsBellowNotice, notice, sizeof(char) * (strnlen(notice, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_listMain->AddNode(newDomain, 0);
 	m_listMain->m_rootObjectsLength = m_listMain->m_rootObjectsLength + 1; //so this list prints
@@ -397,8 +391,8 @@ void rtuts::RTUTSBindedListConstructor::AddNotice(const char* notice)
 
 void rtuts::RTUTSBindedListConstructor::ClearList(void)
 {
-	char* titleBuffer = new char[strnlen(m_listMain->m_nodes[0].m_identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE)];
-	memcpy(titleBuffer, m_listMain->m_nodes[0].m_identifyer, sizeof(char) * (strnlen(m_listMain->m_nodes[0].m_identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+	char* titleBuffer = new char[strnlen(m_listMain->m_nodes[0].m_identifyer, RTUTS__MAX_STRING_BUFFER_SIZE)];
+	memcpy(titleBuffer, m_listMain->m_nodes[0].m_identifyer, sizeof(char) * (strnlen(m_listMain->m_nodes[0].m_identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 	m_listMain->free();
 	SetListIdenifyer(titleBuffer);
@@ -415,8 +409,8 @@ void rtuts::RTUTSBindedListConstructor::SetListIdenifyer(const char* identifyer)
 
 		RTUTSNode newDomain = RTUTSNode();
 
-		newDomain.m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-		memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+		newDomain.m_identifyer = new char[strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+		memcpy(newDomain.m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 
 		m_listMain->AddNode(newDomain, 0);
 	}
@@ -424,8 +418,8 @@ void rtuts::RTUTSBindedListConstructor::SetListIdenifyer(const char* identifyer)
 	{
 		delete[] m_listMain->m_nodes;
 
-		m_listMain->m_nodes[0].m_identifyer = new char[strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1];
-		memcpy(m_listMain->m_nodes[0].m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTRTUTS__MAX_STRING_BUFFER_SIZE) + 1));
+		m_listMain->m_nodes[0].m_identifyer = new char[strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1];
+		memcpy(m_listMain->m_nodes[0].m_identifyer, identifyer, sizeof(char) * (strnlen(identifyer, RTUTS__MAX_STRING_BUFFER_SIZE) + 1));
 	}
 }
 
@@ -677,3 +671,8 @@ bool rtuts::ExtOutputTestResults(const RTUTSDataContainer* results, ExtOutputSet
 	return true;
 }
 
+void rtuts::WriteStringInLibrary(char** writeTo, const char* stringToWrite)
+{
+	(*writeTo) = new char[strnlen(stringToWrite, RTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1];
+	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, RTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1));
+}

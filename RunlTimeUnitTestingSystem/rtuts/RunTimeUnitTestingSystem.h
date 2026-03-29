@@ -2,8 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-#define RTRTUTS__MAX_STRING_BUFFER_SIZE 1024
-#define RTRTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE 2024
+#define RTUTS__MAX_STRING_BUFFER_SIZE 1024
+#define RTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE 2024
 
 #ifndef _STATIC
 #ifdef RTUTS_EXPORTS
@@ -44,20 +44,14 @@ namespace rtuts
 	{
 	public:
 		RTUTSUnitTestSeverityCode m_testResultSeverityCode = RTUTSUnitTestSeverityCode::TSCPass; ///the code the test returned when it was exacuted.
-		char* m_testResultDescriptionBuffer = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
+		char* m_testResultDescriptionBuffer = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH rtuts::WriteStringInLibrary
 		
-		char* m_unitTestFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
-		char* m_unitTestfileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
+		char* m_unitTestFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH rtuts::WriteStringInLibrary
+		char* m_unitTestfileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH rtuts::WriteStringInLibrary
 		
-		char* m_objectFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY,  ACCESS THOUGTH WriteStringSafe
-		char* m_objectFileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH WriteStringSafe
+		char* m_objectFileLocationFromRoot = nullptr; ///DO NOT ACCESS DIRECTLY,  ACCESS THOUGTH rtuts::WriteStringInLibrary
+		char* m_objectFileLocationRelative = nullptr; ///DO NOT ACCESS DIRECTLY, ACCESS THOUGTH rtuts::WriteStringInLibrary
 
-		/// <summary>
-		/// use this to add descriptions and file location also file paths neeed 4 slashes as folder separators. This also can not surpass RTRTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE in length
-		/// </summary>
-		/// <param name="writeTo">writeTo: A pointer to a char variable that you whish to write to which can be passed using the refance oparator.</param>
-		/// <param name="stringToWrite">stringToWrite: The data you wish to safely write to that buffer.</param>
-		void WriteStringSafe(char** writeTo, const char* stringToWrite);
 		void free(void);
 	};
 
@@ -116,14 +110,14 @@ namespace rtuts
 		/// <summary>
 		/// Adds a new child cabable node/identifyer to the last identifyer created.
 		/// </summary>
-		/// <param name="identifyer">identifyer: The node name which can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="identifyer">identifyer: The node name which can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		void PushDomain(const char* identifyer);
 
 		/// <summary>
 		/// Adds a new child cabable node/identifyer to the last identifyer created.
 		/// </summary>
-		/// <param name="type">type: the object type as a string for example: class, namespace ect. This string can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE</param>
-		/// <param name="identifyer">identifyer: The node name which can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="type">type: the object type as a string for example: class, namespace ect. This string can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE</param>
+		/// <param name="identifyer">identifyer: The node name which can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		void PushDomain(const char* type, const char* identifyer);
 
 		/// <summary>
@@ -135,21 +129,21 @@ namespace rtuts
 		/// <summary>
 		/// Adds a unit test to the last hoder created. Tests can not have children.
 		/// </summary>
-		/// <param name="identifyer">identifyer: The node name which can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="identifyer">identifyer: The node name which can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		/// <param name="test">test: A function pointer that returns RTUTSUnitTestResults and containes an argument of type void*.</param>
 		void PushPopTest(const char* identifyer, RTUTSUnitTest test);
 
 		/// <summary>
 		/// Adds a unit test to the last hoder created. Tests can not have children.
 		/// </summary>
-		/// <param name="notice">notice: The notice message that is printed to console when exacuted by RunTests. Can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="notice">notice: The notice message that is printed to console when exacuted by RunTests. Can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		void PushPopNotice(const char* notice);
 
 
 		/// <summary>
 		/// Kills the tree and everything in it and then creates a new tree with a root node that uses the provided identifyer.
 		/// </summary>
-		/// <param name="identifyer">identifyer: The name of the new root node which can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="identifyer">identifyer: The name of the new root node which can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		void Replant(const char* identifyer = "tree root");
 
 
@@ -193,14 +187,14 @@ namespace rtuts
 		/// <summary>
 		/// adds a test to the list
 		/// </summary>
-		/// <param name="identifyer">identifyer: The name of the test being done and this name can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="identifyer">identifyer: The name of the test being done and this name can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		/// <param name="test">test: A function that returns RTUTSUnitTestResults and takes in a value of type void*.</param>
 		void AddTest(const char* identifyer, RTUTSUnitTest test);
 
 		/// <summary>
 		/// adds a notice
 		/// </summary>
-		/// <param name="notice">notice: Notice name string also the string can not be grater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="notice">notice: Notice name string also the string can not be grater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		void AddNotice(const char* notice);
 
 
@@ -240,14 +234,14 @@ namespace rtuts
 		/// <summary>
 		/// adds a test to the list
 		/// </summary>
-		/// <param name="identifyer">identifyer: The name of the test being done and this name can not be greater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="identifyer">identifyer: The name of the test being done and this name can not be greater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		/// <param name="test">test: A function that returns RTUTSUnitTestResults and takes in a value of type void*.</param>
 		void AddTest(const char* identifyer, RTUTSUnitTest test);
 
 		/// <summary>
 		/// adds a notice
 		/// </summary>
-		/// <param name="notice">notice: Notice name string also the string can not be grater than RTRTUTS__MAX_STRING_BUFFER_SIZE.</param>
+		/// <param name="notice">notice: Notice name string also the string can not be grater than RTUTS__MAX_STRING_BUFFER_SIZE.</param>
 		void AddNotice(const char* notice);
 
 
@@ -259,7 +253,7 @@ namespace rtuts
 		/// <summary>
 		/// sets the title of list
 		/// </summary>
-		/// <param name="identifyer">the new title of the list and this con not exxced RTRTUTS__MAX_STRING_BUFFER_SIZE</param>
+		/// <param name="identifyer">the new title of the list and this con not exxced RTUTS__MAX_STRING_BUFFER_SIZE</param>
 		void SetListIdenifyer(const char* identifyer = "list root");
 
 		/// <summary>
@@ -330,5 +324,12 @@ namespace rtuts
 	/// <param name="settings">settings: how should the export be configured settings.</param>
 	/// <returns>was sucessful at doing this</returns>
 	RTUTS_API bool ExtOutputTestResults(const RTUTSDataContainer* results, ExtOutputSettings settings);
+
+	/// <summary>
+	/// use this to add descriptions and file location also file paths neeed 4 slashes as folder separators. This also can not surpass RTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE in length
+	/// </summary>
+	/// <param name="writeTo">writeTo: A pointer to a char variable that you whish to write to which can be passed using the refance oparator.</param>
+	/// <param name="stringToWrite">stringToWrite: The data you wish to safely write to that buffer.</param>
+	RTUTS_API void WriteStringInLibrary(char** writeTo, const char* stringToWrite);
 }
 

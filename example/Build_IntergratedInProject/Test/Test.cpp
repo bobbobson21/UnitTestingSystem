@@ -19,9 +19,9 @@ rtuts::RTUTSUnitTestResults ExampleTestB(void* inArgs)
 	rtuts::RTUTSUnitTestResults returnData = rtuts::RTUTSUnitTestResults();
 	returnData.m_testResultSeverityCode = rtuts::RTUTSUnitTestSeverityCode::TSCFail;
 
-	returnData.WriteStringSafe(&returnData.m_testResultDescriptionBuffer, "you gay");
-	returnData.WriteStringSafe(&returnData.m_objectFileLocationRelative, "Test\\\\Test.cpp");
-	returnData.WriteStringSafe(&returnData.m_unitTestfileLocationRelative, "Test\\\\Test.cpp");
+	rtuts::WriteStringInLibrary(&returnData.m_testResultDescriptionBuffer, "you gay");
+	rtuts::WriteStringInLibrary(&returnData.m_objectFileLocationRelative, "Test\\\\Test.cpp");
+	rtuts::WriteStringInLibrary(&returnData.m_unitTestfileLocationRelative, "Test\\\\Test.cpp");
 
 	return returnData;
 }
@@ -74,7 +74,7 @@ int main()
 	rtuts::ConOutputTestResults(mainTestTree.GetContainer(), rtuts::ConOutputSettings{true, true});
 	rtuts::ExtOutputTestResults(mainTestTree.GetContainer(), rtuts::ExtOutputSettings{true});
 
-	/*rtuts::RTUTSBindedListConstructor mainTestList = rtuts::RTUTSBindedListConstructor();
+	rtuts::RTUTSBindedListConstructor mainTestList = rtuts::RTUTSBindedListConstructor();
 
 	mainTestList.AddTest("ExampleTest", ExampleTest);
 	mainTestList.AddTest("ExampleTestB", ExampleTestB);
@@ -90,8 +90,8 @@ int main()
 	mainTestList.AddTest("ExampleTestD (3)", ExampleTestD);
 	
 	mainTestList.RunTests(nullptr);
-	rtuts::ConOutputTestResults(mainTestList.GetContainer(), rtuts::ConOutputSettings{ true, true });
-	rtuts::ExtOutputTestResults(mainTestList.GetContainer(), rtuts::ExtOutputSettings{ true });*/
+	//rtuts::ConOutputTestResults(mainTestList.GetContainer(), rtuts::ConOutputSettings{ true, true });
+	rtuts::ExtOutputTestResults(mainTestList.GetContainer(), rtuts::ExtOutputSettings{ true });
 
     std::cout << "Hello World!\n";
 }
