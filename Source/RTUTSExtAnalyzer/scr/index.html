@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+
+    <!--<title>Unit testing system analyzer</title>-->
+
+    <link rel="stylesheet" href="index.css"/>
+	<script src = "contentModifyer.js"></script>
+</head>
+
+<script>
+	var inapi = {scaningFolder: "", isScaning: true, fileData: [], lastResultFromLoadChangesAsString: "", combineNodes: true, showNotices: false, ColorCodeMeanings: ["TSCPass","TSCWarning","TSCDetectionFailed","TSCTryCatchFail","TSCFail","TSCCrashFail","TSCMaxNull"]}
+</script>
+
+<body onresize="SizeCheck()">
+
+<!--windows bar-->
+	<div class="DragBar" style="height: 24px; width: 100vw; position: fixed; top: 0px; padding-top:2px; padding-bottom:2px;">
+		<table style="width:100%; margin: 0; padding: 0; position: relative; top: 0; margin-top:-4px;">
+			<tr>
+				<th style = "width: 50%; margin: 0; padding: 0;">
+					<div style = "float: left;">
+						<p class = "dragBarText">&#xa0;&#xa0;Unit Testing System Analyzer</p>
+					</div>
+				</th>
+				<th style = "width: 50%; margin: 0; padding: 0;">
+					<button onclick='api.ModWindow({close:true})' class = "DragBarButtonCls" style = "height: 24px;"><p class = "dragBarText">✕</p></button>
+					<button onclick='api.ModWindow({max:true})' class = "DragBarButton" style = "height: 24px;"><p class = "dragBarText">❐</p></button>
+					<button onclick='api.ModWindow({min:true})' class = "DragBarButton" style = "height: 24px;"><p class = "dragBarText">⎯</p></button>
+					<!--<button onclick='//SHOW SETTINGS CODE GOSE HERE' class = "DragBarButton" style = "height: 24px; margin-right: 10px"><p class = "dragBarText">⌬</p></button>-->
+				</th>
+			</tr>
+		</table>
+	</div>
+
+<!--top bar-->
+	<div style="width: 100vw; margin-top:24px; padding-top: 4px; position: fixed; top: 0; background-color: rgba(0, 0, 0, 0.25);">
+
+		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px; background-color: rgb(20, 20, 20);" name = "button_shownotices" onclick = 'inapi.showNotices = !inapi.showNotices; RebuildDisplay(inapi.combineNodes, inapi.showNotices); ToggleStyle("button_shownotices", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_shownotices", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_shownotices", "show notices: on", "show notices: off" );'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);" name = "button_text_shownotices">show notices: off<p>
+		</button>
+
+		<button class = "ButtonBasic" style = "margin-left: 4px; width: 140px; height: 24px;" name = "button_clearResults" onclick = 'inapi.fileData = []; inapi.lastResultFromLoadChangesAsString = ""; RebuildDisplay(inapi.combineNodes, inapi.showNotices);'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center;" name = "button_text_clearResults">clear results<p>
+		</button>
+
+		<button class = "ButtonBasic" style = "height: 24px; width: 140px; background-color: rgb(128, 128, 128);" name = "button_mergeRes" onclick = 'inapi.combineNodes = !inapi.combineNodes; RebuildDisplay(inapi.combineNodes, inapi.showNotices); ToggleStyle("button_mergeRes", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_mergeRes", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_mergeRes", "merge results: on", "merge results: off" );'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(20, 20, 20);" name = "button_text_mergeRes">merge results: on<p>
+		</button>
+
+		<button class = "ButtonBasic" style = "width: calc(100% - 448px); height: 24px; background-color: rgb(128, 128, 128);" name = "button_isScaning" onclick = 'inapi.isScaning = !inapi.isScaning; ToggleStyle("button_isScaning", "backgroundColor", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleStyle("button_text_isScaning", "color", "rgb(128, 128, 128)", "rgb(20, 20, 20)"); ToggleText( "button_text_isScaning", "is scaning: on", "is scaning: off" );'>
+			<p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(20, 20, 20);" name = "button_text_isScaning">is scaning: on<p>
+		</button>
+
+		<div class= "TopBarDivider" style="height: 2px; width: 100%; margin-top:4px;"></div>
+	</div>
+
+<!--contents section-->
+	<div style="width: 96vw; height: calc(100vh - 60px); position: relative; top: 56px; left: 2vw; margin-top:4px; padding-top: 4px;  overflow: scroll;" name = "viewContents">
+	</div>
+
+	<script>
+		function ClearDisplay()
+		{
+			var elementName = "viewContents";
+			var element = document.getElementsByName(elementName)[0];
+
+			while (element.firstChild)
+			{
+				element.removeChild(element.firstChild);
+			}
+		}
+
+		function CreateIssuesAndSubIssues(data, parentName, showNotices, groupName, index)
+		{
+			var element = document.getElementsByName(parentName)[0];
+			var us = data[index];
+			var canAddBool = true;
+
+			for (let index = 0; index < element.children.length; index++) 
+			{
+				if(element.children[index].getAttribute("name") == groupName + "_" + us.identifyer || element.children[index].getAttribute("name") == groupName + "_" + us.runningTestsBellowNotice)
+				{
+					if(Number(element.children[index].id) < us.testResults.testResultSeverityCode)
+					{
+						element.children[index].id = us.testResults.testResultSeverityCode.toString();
+						element.children[index].children[0].className = "ColorCodeBasic_root ColorCodeBasic_"+ us.testResults.testResultSeverityCode.toString();	
+					}
+
+					canAddBool = false;
+					break;
+				}
+			}
+			
+			if(canAddBool == true && (us.runningTestsBellowNotice == "" || showNotices == true))
+			{
+				var childrenExceptionCount = 0;
+				var details = '<br><p>' + us.testResults.testResultDescriptionBuffer + '</p>'
+				if(us.testResults.testResultDescriptionBuffer == "") {details = ""} else { childrenExceptionCount = childrenExceptionCount +1; }
+
+				var displayCode = '<p> code:' + inapi.ColorCodeMeanings[us.testResults.testResultSeverityCode].toString() + '</p>'
+				if(us.children.length != 0) {displayCode = ""} else { childrenExceptionCount = childrenExceptionCount +1; }
+
+				var colorCodeBar = '<div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_' + us.testResults.testResultSeverityCode.toString() + '"></div>'
+
+				var objectFilePath = {};
+				objectFilePath.filePath = "";
+				if(us.testResults.isObjectFileLocationFromRoot != true) {objectFilePath.filePath = inapi.scaningFolder + "\\";}
+				objectFilePath.filePath = objectFilePath.filePath + us.testResults.objectFileLocation;
+
+				var openTestFilePath = {};
+				openTestFilePath.filePath = "";
+				if(us.testResults.isUnitTestFileLocationFromRoot != true) {openTestFilePath.filePath = inapi.scaningFolder + "\\";}
+				openTestFilePath.filePath = openTestFilePath.filePath + us.testResults.objectFileLocation;
+				
+				var openObjectContent = '<button class = "ButtonBasic" style = "width: calc(50% - 2px); height: 22px; margin-top:8px;" onclick = \'api.OpenFileInCode(' + JSON.stringify(objectFilePath) + ')\'><p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);">open object location in vs code</p></button>'
+				if(us.testResults.objectFileLocation == "") { openObjectContent = "" } else { childrenExceptionCount = childrenExceptionCount +1; }
+
+				var openTestContent = '<button class = "ButtonBasic" style = "width: calc(50% - 2px); height: 22px; margin-left: 4px; margin-top:8px;" onclick = \'api.OpenFileInCode('  + JSON.stringify(openTestFilePath) + ')\'><p style = "margin-left: 8px; margin-right: 8px; text-align: center; color: rgb(128, 128, 128);">open unit test location in vs code</p></button>'
+				if(us.testResults.unitTestFileLocation == "") { openTestContent = "" } else { childrenExceptionCount = childrenExceptionCount +1; }
+
+				var baseIngoreCount = 3;
+				var toggleContent = '<button onclick = "ToggleChildren( document.getElementsByName(\'' + groupName + "_" + us.identifyer + '\')[0], '+ (baseIngoreCount + childrenExceptionCount).toString() +' ); ToggleText(\'ddb_'+ groupName + "_" + us.identifyer+'\', \'hide children ▼\', \'show children ▲\');"><p name = "ddb_'+ groupName + "_" + us.identifyer+'">hide children ▼</p></button>'
+				if(us.children.length == 0) {toggleContent = ""}
+
+
+				var body = '<div class = "DivBasics" id = "'+ us.testResults.testResultSeverityCode +'" name = "' + groupName + "_" + us.identifyer + '">' + colorCodeBar + '<h1>'+ us.identifyer +'</h1>' + displayCode + details + openObjectContent + openTestContent + toggleContent + '</div>'
+				if(us.identifyer == "") { body = '<div class = "DivBasics", name = "' + groupName + "_" + us.runningTestsBellowNotice + '"><div name = "ColorCodeBasic" class = "ColorCodeBasic_root ColorCodeBasic_notice"></div><h2>'+ us.runningTestsBellowNotice +'</h2></div>' }
+
+
+				element.insertAdjacentHTML("beforeend", body);
+			}
+
+			for (let index = 0; index < us.children.length; index++)
+			{
+				CreateIssuesAndSubIssues(data, groupName + "_" + us.identifyer, showNotices, groupName, us.children[index]);
+			}
+
+		}
+
+		function RebuildDisplay(mergeResults, showNotices)
+		{
+			var elementName = "viewContents";
+
+			ClearDisplay();
+			
+			for (let index = 0; index < inapi.fileData.length; index++)
+			{
+				var groupName = "";
+
+				if(mergeResults == false)
+				{
+					groupName = index.toString();
+				}
+
+				for (let nodeIndex = 0; nodeIndex < inapi.fileData[index].rootObjectsLength; nodeIndex++)
+				{
+					CreateIssuesAndSubIssues(inapi.fileData[index].nodes, elementName, showNotices, groupName, nodeIndex)
+				}
+			}
+		}
+	</script>
+
+<!--load in file content-->
+	<script>
+		function SelectProjectFolder(starting)
+		{
+			api.SelectDirectoryAsset({title: "select cmake or visual studios project folder", properties: ['openDirectory']}).then((result) => {
+				if(result.success == false && starting == true)
+				{
+					api.ModWindow({close:true})
+				}
+
+				if(result.success == true)
+				{
+					inapi.scaningFolder = result.results[0];
+				}
+			})
+		}
+	</script>
+
+	<script>
+		function LoadChanges()
+		{
+			const folderPath = inapi.scaningFolder;
+			api.ReadFile({fromRootPath: folderPath, title: "RTUTSext", type: "dat",}).then((result) => {
+				let fileContents = "failed to reach";
+		
+				if(result.success == true)
+				{
+					try
+					{
+						if(result.contents == inapi.lastResultFromLoadChangesAsString)
+						{
+							api.CreateFile({fromRootPath: folderPath, title: "RTUTSext", type: "dat", contents: ""})
+							return;
+						}
+
+						fileContents = JSON.parse(result.contents);
+					
+						if(fileContents != null)
+						{
+							inapi.lastResultFromLoadChangesAsString = result.contents;
+							inapi.fileData[inapi.fileData.length] = fileContents;
+							RebuildDisplay(inapi.combineNodes, inapi.showNotices)
+							
+							api.CreateFile({fromRootPath: folderPath, title: "RTUTSext", type: "dat", contents: ""})
+						}
+					}
+					catch
+					{
+
+					}
+				}
+			})
+		}
+	</script>
+
+<!--Funcs: update func-->
+	<script>
+		var firstFrameTimePoint = 0;
+		var maxExacutionDelay = 1;
+		var currentExacutionDelay = 0;
+
+		function Update(timeStamp)
+		{
+			requestAnimationFrame(Update);
+
+
+			var time = 0;
+			if(	firstFrameTimePoint == undefined && timeStamp != undefined)
+			{
+				firstFrameTimePoint = timeStamp;
+			}
+	
+			if(timeStamp != undefined)
+			{
+				time = timeStamp - firstFrameTimePoint;
+			}
+			
+			if(currentExacutionDelay < time)
+			{
+				currentExacutionDelay = time + maxExacutionDelay;
+				
+				if(inapi.isScaning == true)
+				{
+					LoadChanges();
+				}
+			}
+		}
+	</script>
+
+<!--Funcs: sizing viewports-->
+	<script>
+		function SizeCheck()
+		{
+
+		}
+	</script>
+	
+<!--Funcs: startup procdure/init/onsart-->
+	<script>	
+		SizeCheck();
+		SelectProjectFolder(true);
+		Update();
+	</script>
+</body>
+</html>
+

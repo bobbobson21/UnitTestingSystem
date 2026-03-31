@@ -1,0 +1,9 @@
+   --o make it so that all dates before the current date are grayed off
+   --o make edit/add events overlay window
+   
+   --o make week events overlay window
+
+   o make save system for events
+   o make it save on close
+
+   o make settings overlay window
