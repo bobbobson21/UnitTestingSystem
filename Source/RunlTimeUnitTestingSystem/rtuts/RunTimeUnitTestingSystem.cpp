@@ -12,9 +12,17 @@ void rtuts::RTUTSUnitTestResults::free(void)
 
 	delete[] m_unitTestFileLocationFromRoot;
 	delete[] m_unitTestfileLocationRelative;
-	
+
 	delete[] m_objectFileLocationFromRoot;
 	delete[] m_objectFileLocationRelative;
+
+	m_testResultDescriptionBuffer = nullptr;
+
+	m_unitTestFileLocationFromRoot = nullptr;
+	m_unitTestfileLocationRelative = nullptr;
+
+	m_objectFileLocationFromRoot = nullptr;
+	m_objectFileLocationRelative = nullptr;
 }
 
 void rtuts::RTUTSNode::free(void)
@@ -24,6 +32,11 @@ void rtuts::RTUTSNode::free(void)
 	delete[] m_children;
 	delete[] m_runningTestsBellowNotice;
 	delete[] m_identifyer;
+
+	m_children = nullptr;
+	m_runningTestsBellowNotice = nullptr;
+	m_identifyer = nullptr;
+
 	m_childrenLength = 0;
 }
 
@@ -36,6 +49,7 @@ void rtuts::RTUTSDataContainer::free(void)
 	}
 
 	delete[] m_nodes;
+	m_nodes = nullptr;
 
 	m_nodesLength = 0;
 	m_rootObjectsLength = 0;
@@ -251,7 +265,9 @@ void rtuts::RTUTSTreeConstructor::DomainIdStackPop()
 void rtuts::RTUTSTreeConstructor::DomainIdStackFree()
 {
 	delete[] m_activeDomainStackPointer;
-	m_activeDomainStackLength = 0;
+	m_activeDomainStackPointer = nullptr;
+
+	m_activeDomainStackIndex = 0;
 	m_activeDomainStackLength = 0;
 }
 
@@ -397,7 +413,7 @@ void rtuts::RTUTSBindedListConstructor::ClearList(void)
 	m_listMain->free();
 	SetListIdenifyer(titleBuffer);
 
-	delete titleBuffer;
+	//delete[] titleBuffer;
 }
 
 void rtuts::RTUTSBindedListConstructor::SetListIdenifyer(const char* identifyer)
@@ -676,3 +692,4 @@ void rtuts::WriteStringInLibrary(char** writeTo, const char* stringToWrite)
 	(*writeTo) = new char[strnlen(stringToWrite, RTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1];
 	memcpy((*writeTo), stringToWrite, sizeof(char) * (strnlen(stringToWrite, RTUTS__MAX_STRING_EXTENDED_BUFFER_SIZE) + 1));
 }
+

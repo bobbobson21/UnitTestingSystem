@@ -132,12 +132,12 @@
     <ClInclude Include="lib\rtuts\RunTimeUnitTestingSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="lib\rtuts.lib" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="lib\rtuts\rtuts.dll" />
     <None Include="lib\rtuts\rtuts.exp" />
     <None Include="lib\rtuts\rtuts.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\rtuts.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "rtuts/RunTimeUnitTestingSystem.h"
-//#include "UnitTestingSystem.h"
+//#include "RunTimeUnitTestingSystem.h"
 
 rtuts::RTUTSUnitTestResults ExampleTest(void* inArgs)
 {
@@ -72,7 +72,7 @@ int main()
 
 	mainTestTree.RunTests(nullptr);
 	rtuts::ConOutputTestResults(mainTestTree.GetContainer(), rtuts::ConOutputSettings{true, true});
-	rtuts::ExtOutputTestResults(mainTestTree.GetContainer(), rtuts::ExtOutputSettings{true});
+	//rtuts::ExtOutputTestResults(mainTestTree.GetContainer(), rtuts::ExtOutputSettings{true});
 
 	rtuts::RTUTSBindedListConstructor mainTestList = rtuts::RTUTSBindedListConstructor();
 
@@ -89,9 +89,10 @@ int main()
 	mainTestList.AddTest("ExampleTestD (2)", ExampleTestD);
 	mainTestList.AddTest("ExampleTestD (3)", ExampleTestD);
 	
+
 	mainTestList.RunTests(nullptr);
-	//rtuts::ConOutputTestResults(mainTestList.GetContainer(), rtuts::ConOutputSettings{ true, true });
-	rtuts::ExtOutputTestResults(mainTestList.GetContainer(), rtuts::ExtOutputSettings{ true });
+	rtuts::ConOutputTestResults(mainTestList.GetContainer(), rtuts::ConOutputSettings{ true, true });
+	//rtuts::ExtOutputTestResults(mainTestList.GetContainer(), rtuts::ExtOutputSettings{ true });
 
     std::cout << "Hello World!\n";
 }
