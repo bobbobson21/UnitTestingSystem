@@ -241,8 +241,7 @@ void rtuts::RTUTSTreeConstructor::DomainIdStackPush(unsigned int item)
 {
 	if (m_activeDomainStackIndex >= m_activeDomainStackLength)
 	{
-		m_activeDomainStackLength = m_activeDomainStackLength + 1;
-		unsigned int* stackBuffer = new unsigned int[m_activeDomainStackLength];
+		unsigned int* stackBuffer = new unsigned int[m_activeDomainStackLength +1];
 
 		if (m_activeDomainStackPointer != nullptr)
 		{
@@ -251,6 +250,7 @@ void rtuts::RTUTSTreeConstructor::DomainIdStackPush(unsigned int item)
 		}
 
 		m_activeDomainStackPointer = stackBuffer;
+		m_activeDomainStackLength = m_activeDomainStackLength + 1;
 	}
 
 	m_activeDomainStackPointer[m_activeDomainStackIndex] = item;
